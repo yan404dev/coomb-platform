@@ -1,7 +1,7 @@
 "use client";
 
 import { SWRConfig } from "swr";
-import { api } from "@/lib/api";
+import { api } from "@/shared/lib/api";
 
 export function SWRProvider({ children }: { children: React.ReactNode }) {
   return (

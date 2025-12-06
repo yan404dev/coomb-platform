@@ -8,7 +8,7 @@ import {
   FormLabel,
   FormMessage,
 } from "@/components/ui/form";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface InputMaskFieldProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;

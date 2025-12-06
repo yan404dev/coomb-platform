@@ -1,7 +1,7 @@
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import type { User } from "@/entities";
-import { getUserInitials, getUserAvatarUrl } from "@/lib/user-utils";
-import { cn } from "@/lib/utils";
+import type { User } from "@/shared/types";
+import { getUserInitials, getUserAvatarUrl } from "@/shared/lib/user-utils";
+import { cn } from "@/shared/lib/utils";
 
 interface UserAvatarProps {
   user: User;

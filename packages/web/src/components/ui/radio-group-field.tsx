@@ -9,7 +9,7 @@ import {
 } from "@/components/ui/form";
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface RadioOption {
   value: string | boolean;

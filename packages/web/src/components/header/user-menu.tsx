@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { UserCircle, LogOut } from "lucide-react";
-import type { User } from "@/entities";
+import type { User } from "@/shared/types";
 import { Avatar, AvatarImage, AvatarFallback } from "../ui/avatar";
 
 interface UserMenuProps {

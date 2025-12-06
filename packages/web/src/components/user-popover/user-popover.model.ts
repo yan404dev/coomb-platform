@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/hooks/use-user";
-import { authService } from "@/services";
+import { useUser } from "@/shared/hooks/use-user";
+import { authService } from "@/shared/services";
 import { toast } from "sonner";
 
 interface UseUserPopoverModelProps {

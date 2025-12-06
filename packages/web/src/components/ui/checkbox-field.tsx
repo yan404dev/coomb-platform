@@ -8,7 +8,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Checkbox } from "@/components/ui/checkbox";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 
 interface CheckboxFieldProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;

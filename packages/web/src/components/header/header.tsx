@@ -1,10 +1,10 @@
 "use client";
 
 import { Logo, UserPopover } from "@/components";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { NavigationLinks } from "./navigation-links";
 import { usePathname } from "next/navigation";
-import { useUser } from "@/hooks/use-user";
+import { useUser } from "@/shared/hooks/use-user";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 

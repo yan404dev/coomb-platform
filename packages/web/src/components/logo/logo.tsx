@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { cn } from "@/lib/utils";
+import { cn } from "@/shared/lib/utils";
 import { CoombIcon } from "./coomb-icon";
 import { CoombWordmark } from "./coomb-wordmark";
 import { LogoProps } from "./logo.types";

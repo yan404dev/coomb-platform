@@ -1,6 +1,6 @@
 "use client";
 
-import { useAnonymousSession } from "@/hooks";
+import { useAnonymousSession } from "@/shared/hooks/use-anonymous-session";
 
 export function AnonymousSessionProvider({
   children,

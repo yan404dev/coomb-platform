@@ -1,5 +1,5 @@
-import type { User } from "@/entities";
-import { formatPlanName } from "@/lib/user-utils";
+import type { User } from "@/shared/types";
+import { formatPlanName } from "@/shared/lib/user-utils";
 
 interface PlanBadgeProps {
   planType: User["plan_type"];
