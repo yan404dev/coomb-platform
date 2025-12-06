@@ -15,7 +15,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type RegisterRequest, registerSchema } from "@/schemas/auth.schema";
+import { type RegisterRequest, registerSchema } from "@/app/entrar/_schemas/auth.schema";
 import { useRegisterModel } from "./cadastrar.model";
 
 const RegisterPage = () => {

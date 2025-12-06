@@ -14,7 +14,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { type LoginRequest, loginSchema } from "@/schemas/auth.schema";
+import { type LoginRequest, loginSchema } from "@/app/entrar/_schemas/auth.schema";
 import { useLoginModel } from "./entrar.model";
 
 const LoginPage = () => {
