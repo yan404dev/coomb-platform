@@ -2,8 +2,11 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 import { ResumeRepository } from "../repositories/resume.repository";
 import { CompletionScoreService } from "./completion-score.service";
 import { RESUME_INCLUDE } from "../constants/resume.constants";
-import { CreateLanguageDto, UpdateLanguageDto } from "../dtos/create-language.dto";
-import { ResumeEntity } from "../entities/resume.entity";
+import {
+  CreateLanguageDto,
+  UpdateLanguageDto,
+} from "../dtos/create-language.dto";
+import { Resume } from "@prisma/client";
 import { Language } from "../types/resume-array-items.types";
 import { randomUUID } from "crypto";
 import { recalculateCompletionScore } from "../utils/resume-completion.helper";
@@ -16,7 +19,7 @@ export class LanguageService {
     private readonly completionScoreService: CompletionScoreService
   ) {}
 
-  async add(userId: string, data: CreateLanguageDto): Promise<ResumeEntity> {
+  async add(userId: string, data: CreateLanguageDto): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -45,16 +48,20 @@ export class LanguageService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   async update(
     userId: string,
     languageId: string,
     data: UpdateLanguageDto
-  ): Promise<ResumeEntity> {
+  ): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -88,12 +95,16 @@ export class LanguageService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
-  async delete(userId: string, languageId: string): Promise<ResumeEntity> {
+  async delete(userId: string, languageId: string): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -121,10 +132,12 @@ export class LanguageService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
-
 }
-

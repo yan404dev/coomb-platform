@@ -3,7 +3,7 @@ import { ResumeRepository } from "../repositories/resume.repository";
 import { CompletionScoreService } from "./completion-score.service";
 import { RESUME_INCLUDE } from "../constants/resume.constants";
 import { CreateSkillDto, UpdateSkillDto } from "../dtos/create-skill.dto";
-import { ResumeEntity } from "../entities/resume.entity";
+import { Resume } from "@prisma/client";
 import { Skill } from "../types/resume-array-items.types";
 import { randomUUID } from "crypto";
 import { recalculateCompletionScore } from "../utils/resume-completion.helper";
@@ -16,7 +16,7 @@ export class SkillService {
     private readonly completionScoreService: CompletionScoreService
   ) {}
 
-  async add(userId: string, data: CreateSkillDto): Promise<ResumeEntity> {
+  async add(userId: string, data: CreateSkillDto): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -51,14 +51,14 @@ export class SkillService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   async update(
     userId: string,
     skillId: string,
     data: UpdateSkillDto
-  ): Promise<ResumeEntity> {
+  ): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -98,10 +98,10 @@ export class SkillService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
-  async delete(userId: string, skillId: string): Promise<ResumeEntity> {
+  async delete(userId: string, skillId: string): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -135,6 +135,6 @@ export class SkillService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 }

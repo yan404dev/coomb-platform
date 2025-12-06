@@ -10,7 +10,7 @@ import {
   CreateExperienceDto,
   UpdateExperienceDto,
 } from "../dtos/create-experience.dto";
-import { ResumeEntity } from "../entities/resume.entity";
+import { Resume } from "@prisma/client";
 import { Experience } from "../types/resume-array-items.types";
 import { randomUUID } from "crypto";
 import { recalculateCompletionScore } from "../utils/resume-completion.helper";
@@ -23,7 +23,7 @@ export class ExperienceService {
     private readonly completionScoreService: CompletionScoreService
   ) {}
 
-  async add(userId: string, data: CreateExperienceDto): Promise<ResumeEntity> {
+  async add(userId: string, data: CreateExperienceDto): Promise<Resume> {
     this.validateExperienceDates(data);
 
     return this.resumeRepository
@@ -61,14 +61,14 @@ export class ExperienceService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   async update(
     userId: string,
     experienceId: string,
     data: UpdateExperienceDto
-  ): Promise<ResumeEntity> {
+  ): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -116,10 +116,10 @@ export class ExperienceService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
-  async delete(userId: string, experienceId: string): Promise<ResumeEntity> {
+  async delete(userId: string, experienceId: string): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -153,7 +153,7 @@ export class ExperienceService {
           this.completionScoreService
         );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   private validateExperienceDates(data: CreateExperienceDto | Experience) {

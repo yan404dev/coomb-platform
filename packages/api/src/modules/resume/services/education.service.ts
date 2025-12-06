@@ -1,9 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from "@nestjs/common";
 import { ResumeRepository } from "../repositories/resume.repository";
 import { CompletionScoreService } from "./completion-score.service";
 import { RESUME_INCLUDE } from "../constants/resume.constants";
-import { CreateEducationDto, UpdateEducationDto } from "../dtos/create-education.dto";
-import { ResumeEntity } from "../entities/resume.entity";
+import {
+  CreateEducationDto,
+  UpdateEducationDto,
+} from "../dtos/create-education.dto";
+import { Resume } from "@prisma/client";
 import { Education } from "../types/resume-array-items.types";
 import { randomUUID } from "crypto";
 import { recalculateCompletionScore } from "../utils/resume-completion.helper";
@@ -16,7 +23,7 @@ export class EducationService {
     private readonly completionScoreService: CompletionScoreService
   ) {}
 
-  async add(userId: string, data: CreateEducationDto): Promise<ResumeEntity> {
+  async add(userId: string, data: CreateEducationDto): Promise<Resume> {
     this.validateEducationDates(data);
 
     return this.resumeRepository
@@ -47,16 +54,20 @@ export class EducationService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   async update(
     userId: string,
     educationId: string,
     data: UpdateEducationDto
-  ): Promise<ResumeEntity> {
+  ): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -96,12 +107,16 @@ export class EducationService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
-  async delete(userId: string, educationId: string): Promise<ResumeEntity> {
+  async delete(userId: string, educationId: string): Promise<Resume> {
     return this.resumeRepository
       .transaction(async (tx) => {
         const resume = await tx.resume.findFirst({
@@ -129,9 +144,13 @@ export class EducationService {
           include: RESUME_INCLUDE,
         });
 
-        return recalculateCompletionScore(tx, updatedResume, this.completionScoreService);
+        return recalculateCompletionScore(
+          tx,
+          updatedResume,
+          this.completionScoreService
+        );
       })
-      .then((resume) => new ResumeEntity(resume));
+      .then((resume) => resume);
   }
 
   private validateEducationDates(data: CreateEducationDto | Education) {
@@ -165,4 +184,3 @@ export class EducationService {
     }
   }
 }
-
