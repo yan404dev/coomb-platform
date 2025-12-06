@@ -3,8 +3,8 @@ import { ConfigService } from "@nestjs/config";
 import { HttpService } from "@nestjs/axios";
 import { firstValueFrom, Observable } from "rxjs";
 import * as FormData from "form-data";
-import { ResumeEntity } from "../../../resume/entities/resume.entity";
-import { UserEntity } from "../../../user/entities/user.entity";
+import { AxiosError } from "axios";
+import { Resume, User } from "@prisma/client";
 import {
   CoombAIClientPort,
   OptimizationResult,
@@ -14,6 +14,45 @@ import {
   ChatStreamChunk,
   GeneratePersonalityResult,
 } from "../../domain/ports/coomb-ai-client.port";
+
+interface ExperienceInput {
+  company?: string;
+  title?: string;
+  position?: string;
+  description?: string;
+  startDate?: string;
+  start_date?: string;
+  endDate?: string;
+  end_date?: string;
+  current?: boolean;
+  achievements?: string[];
+}
+
+interface EducationInput {
+  institution?: string;
+  degree?: string;
+  course?: string;
+  field?: string;
+  area?: string;
+  startDate?: string;
+  start_date?: string;
+  endDate?: string;
+  end_date?: string;
+  current?: boolean;
+}
+
+interface SkillInput {
+  name?: string;
+  skill?: string;
+  level?: string;
+}
+
+interface LanguageInput {
+  name?: string;
+  language?: string;
+  level?: string;
+  proficiency?: string;
+}
 
 @Injectable()
 export class CoombAIClientAdapter implements CoombAIClientPort {
@@ -30,8 +69,8 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
   }
 
   async optimizeResume(
-    resume: ResumeEntity,
-    userProfile: UserEntity,
+    resume: Resume,
+    userProfile: User,
     jobDescription: string,
     generatePdf: boolean = true
   ): Promise<OptimizationResult> {
@@ -58,15 +97,17 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
         )
       );
       return response.data;
-    } catch (error: any) {
-      const msg = error?.response?.data?.detail || error?.message || "Erro";
+    } catch (error) {
+      const axiosError = error as AxiosError<{ detail?: string }>;
+      const msg =
+        axiosError.response?.data?.detail || axiosError.message || "Erro";
       throw new Error(`Erro ao otimizar currículo: ${msg}`);
     }
   }
 
   async generatePDF(
-    resume: ResumeEntity,
-    userProfile: UserEntity
+    resume: Resume,
+    userProfile: User
   ): Promise<PDFGenerationResult> {
     const request = {
       template_id: "default",
@@ -98,8 +139,10 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
         ...response.data,
         download_url: `${this.baseUrl}${response.data.download_url}`,
       };
-    } catch (error: any) {
-      const msg = error?.response?.data?.detail || error?.message || "Erro";
+    } catch (error) {
+      const axiosError = error as AxiosError<{ detail?: string }>;
+      const msg =
+        axiosError.response?.data?.detail || axiosError.message || "Erro";
       throw new Error(`Erro ao gerar PDF: ${msg}`);
     }
   }
@@ -122,8 +165,10 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
         )
       );
       return response.data.text;
-    } catch (error: any) {
-      const msg = error?.response?.data?.detail || error?.message || "Erro";
+    } catch (error) {
+      const axiosError = error as AxiosError<{ detail?: string }>;
+      const msg =
+        axiosError.response?.data?.detail || axiosError.message || "Erro";
       throw new Error(`Erro ao extrair texto: ${msg}`);
     }
   }
@@ -149,17 +194,19 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
         )
       );
       return response.data;
-    } catch (error: any) {
-      const msg = error?.response?.data?.detail || error?.message || "Erro";
+    } catch (error) {
+      const axiosError = error as AxiosError<{ detail?: string }>;
+      const msg =
+        axiosError.response?.data?.detail || axiosError.message || "Erro";
       throw new Error(`Erro no chat: ${msg}`);
     }
   }
 
   async chatStream(
-    messages: ChatMessage[],
-    userId?: string | null,
-    temperature: number = 0.7,
-    maxTokens: number = 2000
+    _messages: ChatMessage[],
+    _userId?: string | null,
+    _temperature: number = 0.7,
+    _maxTokens: number = 2000
   ): Promise<Observable<ChatStreamChunk>> {
     return new Observable((observer) => {
       observer.error(new Error("chatStream não implementado ainda"));
@@ -167,63 +214,112 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
     });
   }
 
-  private mapExperiences(experiences: any): any[] {
+  private mapExperiences(experiences: unknown): Array<{
+    company: string;
+    position: string;
+    description: string;
+    start_date: string;
+    end_date: string | null;
+    current: boolean;
+  }> {
     if (!Array.isArray(experiences)) return [];
-    return experiences.map((exp: any) => ({
-      company: exp.company || "",
-      position: exp.title || exp.position || "",
-      description: exp.description || "",
-      start_date: exp.startDate || exp.start_date || "",
-      end_date: exp.endDate || exp.end_date || null,
-      current: exp.current || !exp.endDate,
-    }));
+    return experiences.map((exp: unknown) => {
+      const e = exp as ExperienceInput;
+      return {
+        company: e.company || "",
+        position: e.title || e.position || "",
+        description: e.description || "",
+        start_date: e.startDate || e.start_date || "",
+        end_date: e.endDate || e.end_date || null,
+        current: e.current ?? !e.endDate,
+      };
+    });
   }
 
-  private mapExperiencesForPDF(experiences: any): any[] {
+  private mapExperiencesForPDF(experiences: unknown): Array<{
+    company: string;
+    position: string;
+    description: string;
+    date_range: {
+      start_formatted: string;
+      end_formatted: string | null;
+      is_current: boolean;
+    };
+    achievements: string[];
+  }> {
     if (!Array.isArray(experiences)) return [];
-    return experiences.map((exp: any) => ({
-      company: exp.company || "",
-      position: exp.title || exp.position || "",
-      description: exp.description || "",
-      date_range: {
-        start_formatted: exp.startDate || exp.start_date || "",
-        end_formatted: exp.endDate || exp.end_date || null,
-        is_current: exp.current || !exp.endDate,
-      },
-      achievements: exp.achievements || [],
-    }));
+    return experiences.map((exp: unknown) => {
+      const e = exp as ExperienceInput;
+      return {
+        company: e.company || "",
+        position: e.title || e.position || "",
+        description: e.description || "",
+        date_range: {
+          start_formatted: e.startDate || e.start_date || "",
+          end_formatted: e.endDate || e.end_date || null,
+          is_current: e.current ?? !e.endDate,
+        },
+        achievements: e.achievements || [],
+      };
+    });
   }
 
-  private mapEducationsForPDF(educations: any): any[] {
+  private mapEducationsForPDF(educations: unknown): Array<{
+    institution: string;
+    degree: string;
+    field_of_study: string | null;
+    date_range: {
+      start_formatted: string;
+      end_formatted: string | null;
+      is_current: boolean;
+    };
+  }> {
     if (!Array.isArray(educations)) return [];
-    return educations.map((edu: any) => ({
-      institution: edu.institution || "",
-      degree: edu.degree || edu.course || "",
-      field_of_study: edu.field || edu.area || null,
-      date_range: {
-        start_formatted: edu.startDate || edu.start_date || "",
-        end_formatted: edu.endDate || edu.end_date || null,
-        is_current: edu.current || false,
-      },
-    }));
+    return educations.map((edu: unknown) => {
+      const e = edu as EducationInput;
+      return {
+        institution: e.institution || "",
+        degree: e.degree || e.course || "",
+        field_of_study: e.field || e.area || null,
+        date_range: {
+          start_formatted: e.startDate || e.start_date || "",
+          end_formatted: e.endDate || e.end_date || null,
+          is_current: e.current ?? false,
+        },
+      };
+    });
   }
 
-  private mapSkills(skills: any): Array<{ name: string; level?: string }> {
+  private mapSkills(
+    skills: unknown
+  ): Array<{ name: string; level?: string | null }> {
     if (!Array.isArray(skills)) return [];
-    return skills.map((s: any) => ({
-      name: typeof s === "string" ? s : s.name || s.skill || "",
-      level: s.level || null,
-    }));
+    return skills.map((s: unknown) => {
+      if (typeof s === "string") {
+        return { name: s, level: null };
+      }
+      const skill = s as SkillInput;
+      return {
+        name: skill.name || skill.skill || "",
+        level: skill.level || null,
+      };
+    });
   }
 
   private mapLanguages(
-    languages: any
+    languages: unknown
   ): Array<{ name: string; proficiency: string }> {
     if (!Array.isArray(languages)) return [];
-    return languages.map((l: any) => ({
-      name: l.name || l.language || l,
-      proficiency: l.level || l.proficiency || "Básico",
-    }));
+    return languages.map((l: unknown) => {
+      if (typeof l === "string") {
+        return { name: l, proficiency: "Básico" };
+      }
+      const lang = l as LanguageInput;
+      return {
+        name: lang.name || lang.language || "",
+        proficiency: lang.level || lang.proficiency || "Básico",
+      };
+    });
   }
 
   async generatePersonality(
@@ -231,8 +327,8 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
     userData?: {
       professional_summary?: string | null;
       career_goals?: string | null;
-      experiences?: any[];
-      skills?: any[];
+      experiences?: unknown[];
+      skills?: unknown[];
     }
   ): Promise<GeneratePersonalityResult> {
     const request = {
@@ -248,15 +344,16 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
         )
       );
       return response.data;
-    } catch (error: any) {
-      const msg = error?.response?.data?.detail || error?.message || "Erro";
+    } catch (error) {
+      const axiosError = error as AxiosError<{ detail?: string }>;
+      const msg =
+        axiosError.response?.data?.detail || axiosError.message || "Erro";
       throw new Error(`Erro ao gerar personalidade: ${msg}`);
     }
   }
 
-  private buildLocation(user: UserEntity): string | null {
+  private buildLocation(user: User): string | null {
     if (user.city && user.state) return `${user.city}, ${user.state}`;
     return user.city || user.state || null;
   }
 }
-

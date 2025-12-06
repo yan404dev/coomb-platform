@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { User, Prisma } from "@prisma/client";
 import { UserRepository } from "../../repositories/user.repository";
-import { UserEntity } from "../../entities/user.entity";
 import { CreateUserDto } from "../../dto/create-user.dto";
 import { UpdateUserDto } from "../../dto/update-user.dto";
 import { UserRepositoryPort } from "../../domain/ports/user.repository.port";
@@ -9,21 +9,25 @@ import { UserRepositoryPort } from "../../domain/ports/user.repository.port";
 export class UserRepositoryAdapter implements UserRepositoryPort {
   constructor(private readonly userRepository: UserRepository) {}
 
-  async findByEmail(email: string): Promise<UserEntity | null> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.userRepository.findByEmail(email);
-    return user ? new UserEntity(user) : null;
+    return user;
   }
 
-  async findByEmailWithPassword(email: string): Promise<any> {
-    return this.userRepository.findByEmailWithPassword(email);
+  async findByEmailWithPassword(email: string): Promise<(User & { password: string }) | null> {
+    const user = await this.userRepository.findByEmailWithPassword(email);
+    if (!user || !user.password) {
+      return null;
+    }
+    return user as User & { password: string };
   }
 
-  async findById(id: string): Promise<UserEntity | null> {
+  async findById(id: string): Promise<User | null> {
     const user = await this.userRepository.findUnique({ id });
-    return user ? new UserEntity(user) : null;
+    return user;
   }
 
-  async findAll(page: number, limit: number): Promise<{ data: UserEntity[]; meta: any }> {
+  async findAll(page: number, limit: number): Promise<{ data: User[]; meta: { total: number; page: number; limit: number } }> {
     const result = await this.userRepository.findManyPaginated(undefined, {
       page,
       limit,
@@ -31,28 +35,26 @@ export class UserRepositoryAdapter implements UserRepositoryPort {
     });
 
     return {
-      data: result.data.map((user) => new UserEntity(user)),
+      data: result.data,
       meta: result.meta,
     };
   }
 
-  async create(data: CreateUserDto & { password: string }): Promise<UserEntity> {
+  async create(data: CreateUserDto & { password: string }): Promise<User> {
     const user = await this.userRepository.create(data);
-    return new UserEntity(user);
+    return user;
   }
 
-  async update(id: string, data: UpdateUserDto): Promise<UserEntity> {
+  async update(id: string, data: UpdateUserDto): Promise<User> {
     const { personality_profile, ...rest } = data;
-    const user = await this.userRepository.update(
-      { id },
-      {
-        ...rest,
-        ...(personality_profile && {
-          personality_profile: personality_profile as any,
-        }),
-      }
-    );
-    return new UserEntity(user);
+    const updateData: Record<string, unknown> = { ...rest };
+    
+    if (personality_profile !== undefined) {
+      updateData.personality_profile = personality_profile as unknown as Prisma.InputJsonValue;
+    }
+    
+    const user = await this.userRepository.update({ id }, updateData as any);
+    return user;
   }
 
   async delete(id: string): Promise<void> {

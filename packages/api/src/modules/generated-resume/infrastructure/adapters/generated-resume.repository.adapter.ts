@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException } from "@nestjs/common";
-import { PrismaService } from "../../../common/prisma/prisma.service";
-import { GeneratedResumeEntity } from "../../entities/generated-resume.entity";
+import { PrismaService } from "../../../../common/prisma/prisma.service";
+import { GeneratedResume } from "@prisma/client";
 import { CreateGeneratedResumeDto } from "../../dto/create-generated-resume.dto";
 import { UpdateGeneratedResumeDto } from "../../dto/update-generated-resume.dto";
 import { GeneratedResumeRepositoryPort } from "../../domain/ports/generated-resume.repository.port";
@@ -9,7 +9,7 @@ import { GeneratedResumeRepositoryPort } from "../../domain/ports/generated-resu
 export class GeneratedResumeRepositoryAdapter implements GeneratedResumeRepositoryPort {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(userId: string, data: CreateGeneratedResumeDto): Promise<GeneratedResumeEntity> {
+  async create(userId: string, data: CreateGeneratedResumeDto): Promise<GeneratedResume> {
     const baseResume = await this.prisma.resume.findFirst({
       where: {
         user_id: userId,
@@ -36,10 +36,10 @@ export class GeneratedResumeRepositoryAdapter implements GeneratedResumeReposito
       },
     });
 
-    return new GeneratedResumeEntity(generatedResume);
+    return generatedResume;
   }
 
-  async findAll(userId: string, baseResumeId?: string): Promise<GeneratedResumeEntity[]> {
+  async findAll(userId: string, baseResumeId?: string): Promise<GeneratedResume[]> {
     const generatedResumes = await this.prisma.generatedResume.findMany({
       where: {
         user_id: userId,
@@ -48,10 +48,10 @@ export class GeneratedResumeRepositoryAdapter implements GeneratedResumeReposito
       orderBy: { created_at: "desc" },
     });
 
-    return generatedResumes.map((resume) => new GeneratedResumeEntity(resume));
+    return generatedResumes;
   }
 
-  async findById(id: string, userId: string): Promise<GeneratedResumeEntity> {
+  async findById(id: string, userId: string): Promise<GeneratedResume> {
     const generatedResume = await this.prisma.generatedResume.findUnique({
       where: { id },
     });
@@ -64,14 +64,14 @@ export class GeneratedResumeRepositoryAdapter implements GeneratedResumeReposito
       throw new ForbiddenException("Access denied to this generated resume");
     }
 
-    return new GeneratedResumeEntity(generatedResume);
+    return generatedResume;
   }
 
   async update(
     id: string,
     userId: string,
     data: UpdateGeneratedResumeDto
-  ): Promise<GeneratedResumeEntity> {
+  ): Promise<GeneratedResume> {
     const existingGeneratedResume = await this.prisma.generatedResume.findUnique({
       where: { id },
     });
@@ -96,7 +96,7 @@ export class GeneratedResumeRepositoryAdapter implements GeneratedResumeReposito
       data: updateData,
     });
 
-    return new GeneratedResumeEntity(generatedResume);
+    return generatedResume;
   }
 
   async delete(id: string, userId: string): Promise<void> {
