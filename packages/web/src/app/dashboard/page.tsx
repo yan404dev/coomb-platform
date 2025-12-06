@@ -1,26 +1,27 @@
 "use client";
 
 import { useState, lazy, Suspense } from "react";
-import { DashboardHeader, DashboardInput } from "@/components";
-import { DASHBOARD_SUGGESTIONS } from "@/constants/dashboard-suggestions";
-import { useUser } from "@/hooks/use-user";
+import { DASHBOARD_SUGGESTIONS } from "@/shared/constants/dashboard-suggestions";
+import { useUser } from "@/shared/hooks/use-user";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useDashboardModel } from "./dashboard.model";
+import { DashboardHeader } from "./_components/dashboard-header";
+import { DashboardInput } from "./_components/dashboard-input";
+import { useDashboardModel } from "./_hooks/use-dashboard";
 
 const DashboardSidebar = lazy(() =>
-  import("@/components/dashboard-sidebar").then((mod) => ({
+  import("./_components/dashboard-sidebar").then((mod) => ({
     default: mod.DashboardSidebar,
   }))
 );
 
 const OptimizationChat = lazy(() =>
-  import("@/components/optimization-chat").then((mod) => ({
+  import("./_components/optimization-chat").then((mod) => ({
     default: mod.OptimizationChat,
   }))
 );
 
 const SuggestionPopover = lazy(() =>
-  import("@/components/suggestion-popover").then((mod) => ({
+  import("./_components/suggestion-popover").then((mod) => ({
     default: mod.SuggestionPopover,
   }))
 );

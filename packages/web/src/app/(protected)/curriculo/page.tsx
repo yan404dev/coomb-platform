@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { Header } from "@/components";
-import { CurriculumContainer } from "@/components/curriculum/curriculum-container";
-import { CurriculumSection } from "@/components/navigation-curriculum";
+import { CurriculumContainer } from "./_components/curriculum/curriculum-container";
+import { CurriculumSection } from "./_components/navigation-curriculum";
 import { TooltipProvider } from "@/components/ui/tooltip";
 
 const navigationItems = [

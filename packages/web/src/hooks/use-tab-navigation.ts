@@ -1,7 +1,7 @@
 "use client";
 
 import { parseAsStringEnum, useQueryState } from "nuqs";
-import { CurriculumSection } from "@/components/navigation-curriculum";
+import { CurriculumSection } from "@/app/(protected)/curriculo/_components/navigation-curriculum";
 
 export function useTabNavigation() {
   const [tab, setTab] = useQueryState(

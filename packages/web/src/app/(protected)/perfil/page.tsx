@@ -1,16 +1,14 @@
 "use client";
 
-import {
-  Header,
-  ProfileAboutSection,
-  ProfileHeader,
-  ProfilePersonalitySection,
-  ProfileSectionCard,
-  ProfileSectionItem,
-  ProfileSidebar,
-  ProfileSkillsSection,
-} from "@/components";
-import { CurriculumSection } from "@/components/navigation-curriculum";
+import { Header } from "@/components";
+import { ProfileAboutSection } from "./_components/profile-about-section";
+import { ProfileHeader } from "./_components/profile-header";
+import { ProfilePersonalitySection } from "./_components/profile-personality-section";
+import { ProfileSectionCard } from "./_components/profile-section-card";
+import { ProfileSectionItem } from "./_components/profile-section-card";
+import { ProfileSidebar } from "./_components/profile-sidebar";
+import { ProfileSkillsSection } from "./_components/profile-skills-section";
+import { CurriculumSection } from "../curriculo/_components/navigation-curriculum";
 import { useResume } from "@/hooks/use-resume";
 
 export default function Profile() {
