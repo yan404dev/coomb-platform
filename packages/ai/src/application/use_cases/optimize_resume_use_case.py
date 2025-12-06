@@ -16,6 +16,7 @@ from application.dto.optimization_dto import (
 )
 from domain.ports.outbound.llm_provider_port import LLMProviderPort, LLMMessage
 from domain.ports.outbound.pdf_renderer_port import PDFRendererPort, PDFRenderRequest
+from application.services.rag_service import RAGService
 
 logger = logging.getLogger(__name__)
 
@@ -43,9 +44,11 @@ class OptimizeResumeUseCase:
         self,
         llm_provider: LLMProviderPort,
         pdf_renderer: Optional[PDFRendererPort] = None,
+        rag_service: Optional[RAGService] = None,
     ):
         self._llm = llm_provider
         self._pdf = pdf_renderer
+        self._rag = rag_service
 
     async def execute(self, request: OptimizeResumeRequest) -> OptimizeResumeResponse:
         logger.info(f"Optimizing resume for: {request.resume.candidate_name}")
@@ -92,8 +95,31 @@ Regras:
 
 Output: JSON com a otimização."""
 
+        job_description = request.job_description
+
+        if self._rag:
+            try:
+                market_context = await self._rag.retrieve_context(
+                    query=job_description,
+                    limit=3,
+                    min_score=0.7,
+                )
+                if market_context:
+                    context_text = "\n\n".join(
+                        [
+                            f"[Conhecimento de Mercado {i+1}]\n{r.document.content}"
+                            for i, r in enumerate(market_context)
+                        ]
+                    )
+                    job_description = f"""{job_description}
+
+=== CONHECIMENTO DE MERCADO ===
+{context_text}"""
+            except Exception as e:
+                logger.warning(f"RAG enrichment failed for optimization: {e}")
+
         user_prompt = f"""## Vaga
-{request.job_description}
+{job_description}
 
 ## Currículo
 Nome: {request.resume.candidate_name}

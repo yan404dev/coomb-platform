@@ -192,11 +192,7 @@ export class MessageService {
       pdf_url: undefined,
     });
 
-    await this.processAssistantResponse(
-      currentChatId,
-      userId,
-      extractedResumeData
-    );
+    await this.processAssistantResponse(currentChatId, userId);
     await this.updateChatMetadata(currentChatId);
 
     return { chatId: currentChatId, data: extractedResumeData };
@@ -216,8 +212,7 @@ export class MessageService {
 
   private async processAssistantResponse(
     chatId: string,
-    userId: string | null,
-    temporaryResumeData?: { raw_text: string } | null
+    userId: string | null
   ): Promise<void> {
     if (!this.coombAI) return;
 
@@ -226,13 +221,6 @@ export class MessageService {
       role: msg.messageType === MessageType.USER ? "user" : "assistant",
       content: msg.content,
     }));
-
-    if (temporaryResumeData?.raw_text) {
-      chatMessages.push({
-        role: "user",
-        content: `=== CONTEÚDO DO CURRÍCULO ===\n${temporaryResumeData.raw_text}`,
-      });
-    }
 
     const assistantResponse = await this.coombAI.chatCompletion(
       chatMessages,

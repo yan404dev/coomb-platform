@@ -53,6 +53,7 @@ def create_app() -> FastAPI:
         chat_router,
         document_router,
         health_router,
+        knowledge_router,
         optimization_router,
         pdf_router,
     )
@@ -62,6 +63,7 @@ def create_app() -> FastAPI:
     app.include_router(pdf_router)
     app.include_router(document_router)
     app.include_router(optimization_router)
+    app.include_router(knowledge_router)
 
     storage_path = Path("storage")
     if storage_path.exists():

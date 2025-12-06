@@ -4,13 +4,22 @@ from typing import Optional
 from fastapi import APIRouter, HTTPException, status
 from pydantic import BaseModel, Field
 
-from domain.ports.outbound.llm_provider_port import LLMMessage, LLMProviderPort
+from domain.ports.outbound.llm_provider_port import LLMMessage
 from infrastructure.adapters.outbound.llm.openai_adapter import OpenAIAdapter
+from infrastructure.adapters.outbound.vector_store.qdrant_adapter import QdrantAdapter
+from application.services.embedding_service import EmbeddingService
+from application.services.rag_service import RAGService
+from infrastructure.config import get_settings
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/chat", tags=["Chat"])
 
+settings = get_settings()
 llm_adapter = OpenAIAdapter()
+
+vector_store = QdrantAdapter()
+embedding_service = EmbeddingService()
+rag_service = RAGService(vector_store, embedding_service)
 
 
 class ChatMessage(BaseModel):
@@ -48,6 +57,25 @@ async def chat_completion(request: ChatCompletionRequest):
         llm_messages = [
             LLMMessage(role=msg.role, content=msg.content) for msg in request.messages
         ]
+
+        last_user_message = None
+        for msg in reversed(request.messages):
+            if msg.role == "user":
+                last_user_message = msg.content
+                break
+
+        if last_user_message and rag_service._embedding_service.is_configured():
+            try:
+                enriched_query = await rag_service.enrich_prompt(
+                    user_query=last_user_message,
+                    limit=3,
+                )
+                if enriched_query != last_user_message:
+                    llm_messages[-1] = LLMMessage(
+                        role="user", content=enriched_query
+                    )
+            except Exception as e:
+                logger.warning(f"RAG enrichment failed, using original query: {e}")
 
         result = await llm_adapter.complete(
             llm_messages,

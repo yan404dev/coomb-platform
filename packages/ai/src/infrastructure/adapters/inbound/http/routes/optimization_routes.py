@@ -20,13 +20,19 @@ from application.use_cases.optimize_resume_use_case import OptimizeResumeUseCase
 from domain.ports.outbound.llm_provider_port import LLMMessage
 from infrastructure.adapters.outbound.llm import OpenAIAdapter
 from infrastructure.adapters.outbound.pdf import WeasyPrintAdapter
+from infrastructure.adapters.outbound.vector_store.qdrant_adapter import QdrantAdapter
+from application.services.embedding_service import EmbeddingService
+from application.services.rag_service import RAGService
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api/v1/resumes", tags=["Resume Optimization"])
 
 llm_adapter = OpenAIAdapter()
 pdf_adapter = WeasyPrintAdapter()
-optimize_use_case = OptimizeResumeUseCase(llm_adapter, pdf_adapter)
+vector_store = QdrantAdapter()
+embedding_service = EmbeddingService()
+rag_service = RAGService(vector_store, embedding_service)
+optimize_use_case = OptimizeResumeUseCase(llm_adapter, pdf_adapter, rag_service)
 
 
 class ExperienceSchema(BaseModel):

@@ -89,9 +89,10 @@ class VectorStorePort(ABC):
     async def search(
         self,
         query: str,
-        collection_name: str,
+        collection_name: str | None = None,
         limit: int = 10,
         filter_metadata: Optional[dict] = None,
+        query_vector: Optional[list[float]] = None,
     ) -> list[VectorSearchResult]:
         """
         Busca documentos similares à query.
