@@ -1,4 +1,3 @@
-"""WeasyPrint adapter para geração de PDF."""
 
 from __future__ import annotations
 
@@ -41,8 +40,6 @@ AVAILABLE_TEMPLATES: dict[str, TemplateConfig] = {
 
 
 class WeasyPrintAdapter(PDFRendererPort):
-    """PDF renderer usando WeasyPrint + Jinja2 templates."""
-
     def __init__(
         self,
         templates_dir: Path | None = None,
@@ -113,7 +110,21 @@ class WeasyPrintAdapter(PDFRendererPort):
                     if isinstance(v, dict):
                         setattr(self, k, DotDict(v))
                     elif isinstance(v, list):
-                        setattr(self, k, [DotDict(i) if isinstance(i, dict) else i for i in v])
+                        if k == "skills" and v and isinstance(v[0], dict):
+                            if any(key in v[0] for key in ["languages", "frameworks", "tools"]):
+                                skills_dict = {}
+                                for item in v:
+                                    if isinstance(item, dict):
+                                        for cat, values in item.items():
+                                            if cat not in skills_dict:
+                                                skills_dict[cat] = []
+                                            if isinstance(values, list):
+                                                skills_dict[cat].extend(values)
+                                setattr(self, k, DotDict(skills_dict))
+                            else:
+                                setattr(self, k, [DotDict(i) if isinstance(i, dict) else i for i in v])
+                        else:
+                            setattr(self, k, [DotDict(i) if isinstance(i, dict) else i for i in v])
                     else:
                         setattr(self, k, v)
 
