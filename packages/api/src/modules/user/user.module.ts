@@ -7,6 +7,7 @@ import { UserRepositoryAdapter } from "./infrastructure/adapters/user.repository
 import { CreateUserUseCase } from "./application/use-cases/create-user.use-case";
 import { UpdateUserUseCase } from "./application/use-cases/update-user.use-case";
 import { PersonalityService } from "./services/personality.service";
+import { INJECTION_TOKENS } from "../../common/constants/injection-tokens";
 
 @Module({
   imports: [PrismaModule],
@@ -19,10 +20,10 @@ import { PersonalityService } from "./services/personality.service";
     UpdateUserUseCase,
     PersonalityService,
     {
-      provide: "USER_REPOSITORY_PORT",
+      provide: INJECTION_TOKENS.USER_REPOSITORY_PORT,
       useClass: UserRepositoryAdapter,
     },
   ],
-  exports: [UserService, UserRepository, "USER_REPOSITORY_PORT", PersonalityService],
+  exports: [UserService, UserRepository, INJECTION_TOKENS.USER_REPOSITORY_PORT, PersonalityService],
 })
 export class UserModule {}

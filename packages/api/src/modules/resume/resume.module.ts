@@ -13,6 +13,7 @@ import { SkillService } from "./services/skill.service";
 import { LanguageService } from "./services/language.service";
 import { EducationService } from "./services/education.service";
 import { CertificationService } from "./services/certification.service";
+import { INJECTION_TOKENS } from "../../common/constants/injection-tokens";
 
 @Module({
   imports: [PrismaModule],
@@ -26,7 +27,7 @@ import { CertificationService } from "./services/certification.service";
     GetResumeUseCase,
     UpdateResumeUseCase,
     {
-      provide: "RESUME_REPOSITORY_PORT",
+      provide: INJECTION_TOKENS.RESUME_REPOSITORY_PORT,
       useClass: ResumeRepositoryAdapter,
     },
     ExperienceService,
@@ -38,7 +39,7 @@ import { CertificationService } from "./services/certification.service";
   exports: [
     ResumeService,
     ResumeRepository,
-    "RESUME_REPOSITORY_PORT",
+    INJECTION_TOKENS.RESUME_REPOSITORY_PORT,
     ExperienceService,
     SkillService,
     LanguageService,

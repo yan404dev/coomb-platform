@@ -16,6 +16,7 @@ import { PrismaModule } from "../../common/prisma/prisma.module";
 import { AIModule } from "../ai/ai.module";
 import { ResumeModule } from "../resume/resume.module";
 import { UserModule } from "../user/user.module";
+import { INJECTION_TOKENS } from "../../common/constants/injection-tokens";
 
 @Module({
   imports: [PrismaModule, AIModule, ResumeModule, UserModule],
@@ -33,11 +34,11 @@ import { UserModule } from "../user/user.module";
     GetChatUseCase,
     CreateMessageUseCase,
     {
-      provide: "CHAT_REPOSITORY_PORT",
+      provide: INJECTION_TOKENS.CHAT_REPOSITORY_PORT,
       useClass: ChatRepositoryAdapter,
     },
     {
-      provide: "MESSAGE_REPOSITORY_PORT",
+      provide: INJECTION_TOKENS.MESSAGE_REPOSITORY_PORT,
       useClass: MessageRepositoryAdapter,
     },
   ],
@@ -45,8 +46,8 @@ import { UserModule } from "../user/user.module";
     ChatService,
     MessageService,
     SessionService,
-    "CHAT_REPOSITORY_PORT",
-    "MESSAGE_REPOSITORY_PORT",
+    INJECTION_TOKENS.CHAT_REPOSITORY_PORT,
+    INJECTION_TOKENS.MESSAGE_REPOSITORY_PORT,
   ],
 })
 export class ChatModule {}
