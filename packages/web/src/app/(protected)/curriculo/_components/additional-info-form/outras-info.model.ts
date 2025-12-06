@@ -4,13 +4,13 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useCallback, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useResume } from "@/hooks/use-resume";
-import { useUser } from "@/hooks/use-user";
+import { useResume } from "../../_hooks/use-resume";
+import { useUser } from "@/shared/hooks/use-user";
 import {
   type AdditionalInfoFormRequest,
   additionalInfoFormSchema,
 } from "./additional-info-form.schema";
-import { userService } from "@/services";
+import { userService } from "@/shared/services/user.service";
 
 const DEFAULT_VALUES: AdditionalInfoFormRequest = {
   city: "",

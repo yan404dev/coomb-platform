@@ -4,7 +4,7 @@ import { AddItemButton } from "@/components/add-item-button";
 import { LanguageCard } from "../language-card";
 import { LanguageModal } from "../language-modal";
 import { FormSection } from "@/components/form";
-import type { Language } from "@/entities";
+import type { Language } from "@/shared/types";
 import { useLanguagesListModel } from "./languages-list.model";
 
 export function LanguagesList() {

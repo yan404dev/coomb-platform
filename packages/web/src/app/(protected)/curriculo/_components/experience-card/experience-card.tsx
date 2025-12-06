@@ -1,7 +1,7 @@
 "use client";
 
 import { useExperienceCardModel } from "./experience-card.model";
-import { formatPeriod, truncateText } from "@/lib/format";
+import { formatPeriod, truncateText } from "@/shared/lib/format";
 
 interface ExperienceCardProps {
   onEdit?: (experienceId: string) => void;

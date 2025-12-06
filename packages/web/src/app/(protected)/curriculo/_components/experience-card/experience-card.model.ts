@@ -1,5 +1,5 @@
-import { useResume } from "@/hooks/use-resume";
-import { resumeService } from "@/services";
+import { useResume } from "../../_hooks/use-resume";
+import { resumeService } from "../../_services/resume.service";
 import { toast } from "sonner";
 
 export const useExperienceCardModel = () => {

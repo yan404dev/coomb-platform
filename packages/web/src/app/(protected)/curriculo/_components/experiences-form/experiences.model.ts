@@ -3,9 +3,9 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { userService } from "@/services";
-import { useResume } from "@/hooks/use-resume";
-import { useUser } from "@/hooks/use-user";
+import { userService } from "@/shared/services/user.service";
+import { useResume } from "../../_hooks/use-resume";
+import { useUser } from "@/shared/hooks/use-user";
 import { ExperiencesFormRequest, experiencesFormSchema } from "./experiences.schema";
 
 export function useExperiencesModel(onContinue?: () => void) {

@@ -2,9 +2,9 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
-import { useResume } from "@/hooks/use-resume";
+import { useResume } from "../../_hooks/use-resume";
 import { type SkillRequest, skillSchema } from "./skill-modal.schema";
-import { resumeService } from "@/services";
+import { resumeService } from "../../_services/resume.service";
 
 interface UseSkillModalModelOptions {
   defaultValues?: Partial<SkillRequest> | null;

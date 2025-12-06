@@ -14,7 +14,7 @@ import { InputField } from "@/components/ui/input-field";
 import { InputMaskField } from "@/components/ui/input-mask-field";
 import { TextareaField } from "@/components/ui/textarea-field";
 import { useExperienceModalModel } from "./experience-modal.model";
-import { masks } from "@/lib/masks";
+import { masks } from "@/shared/lib/masks";
 
 interface ExperienceModalProps {
   open: boolean;

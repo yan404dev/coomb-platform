@@ -12,10 +12,10 @@ import {
 import { SidebarCurriculum } from "../sidebar-curriculum";
 import { SkillsList } from "../skills-list";
 import { LanguagesList } from "../languages-list";
-import { getResumeCompletionStats } from "@/utils/resume-completion";
+import { getResumeCompletionStats } from "@/shared/utils/resume-completion";
 import { ImportCurriculumCard } from "./import-curriculum-card";
-import { useResume } from "@/hooks/use-resume";
-import { useTabNavigation } from "@/hooks/use-tab-navigation";
+import { useResume } from "../../_hooks/use-resume";
+import { useTabNavigation } from "@/app/(protected)/curriculo/_hooks/use-tab-navigation";
 
 interface CurriculumContainerProps {
   navigationItems: NavigationItem[];

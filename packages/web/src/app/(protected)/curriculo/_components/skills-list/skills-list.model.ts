@@ -2,9 +2,9 @@
 
 import { useCallback, useMemo, useState } from "react";
 import { toast } from "sonner";
-import type { Skill } from "@/entities";
-import { useResume } from "@/hooks/use-resume";
-import { resumeService } from "@/services";
+import type { Skill } from "@/shared/types";
+import { useResume } from "../../_hooks/use-resume";
+import { resumeService } from "../../_services/resume.service";
 
 export function useSkillsListModel() {
   const { data: resume, mutate, isLoading, error } = useResume();

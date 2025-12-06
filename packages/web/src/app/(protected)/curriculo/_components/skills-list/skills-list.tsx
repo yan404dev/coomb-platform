@@ -4,7 +4,7 @@ import { AddItemButton } from "@/components/add-item-button";
 import { SkillCard } from "../skill-card";
 import { SkillModal } from "../skill-modal";
 import { FormSection } from "@/components/form";
-import type { Skill } from "@/entities";
+import type { Skill } from "@/shared/types";
 import { useSkillsListModel } from "./skills-list.model";
 
 export function SkillsList() {

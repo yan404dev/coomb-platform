@@ -4,7 +4,7 @@ import { AddItemButton } from "@/components/add-item-button";
 import { EducationCard } from "../education-card";
 import { EducationModal } from "../education-modal";
 import { FormSection } from "@/components/form";
-import { useResume } from "@/hooks/use-resume";
+import { useResume } from "../../_hooks/use-resume";
 import { useEducationsListModel } from "./educations-list.model";
 
 export function EducationsList() {

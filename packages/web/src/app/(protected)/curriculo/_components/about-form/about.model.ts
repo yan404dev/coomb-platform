@@ -3,10 +3,10 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 
-import { userService } from "@/services";
-import { useResume } from "@/hooks/use-resume";
+import { userService } from "@/shared/services/user.service";
+import { useResume } from "../../_hooks/use-resume";
 import { AboutFormRequest, aboutFormSchema } from "./about.schema";
-import { ResumeEntity } from "@/entities";
+import { ResumeEntity } from "@/shared/types";
 
 export function useAboutModel(onContinue?: () => void) {
   const { data, isLoading, error, mutate } = useResume();

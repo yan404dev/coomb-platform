@@ -3,16 +3,18 @@
 import type { ChangeEvent } from "react";
 import { useCallback, useRef, useState } from "react";
 import { toast } from "sonner";
-import { aiService, resumeService, userService } from "@/services";
-import { useResume } from "@/hooks/use-resume";
-import { useUser } from "@/hooks/use-user";
+import { userService } from "@/shared/services/user.service";
+import { aiService } from "@/app/dashboard/_services/ai.service";
+import { resumeService } from "../../_services/resume.service";
+import { useResume } from "../../_hooks/use-resume";
+import { useUser } from "@/shared/hooks/use-user";
 import type {
   Experience,
   Skill,
   Language,
   Education,
   Certification,
-} from "@/entities";
+} from "@/shared/types";
 
 const ACCEPTED_MIME_TYPES = new Set([
   "application/pdf",

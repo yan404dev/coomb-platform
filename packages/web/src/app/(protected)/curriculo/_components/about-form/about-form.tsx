@@ -10,7 +10,7 @@ import { SelectField } from "@/components/ui/select-field";
 import { InfoBox } from "@/components/info-box";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useAboutModel } from "./about.model";
-import { masks } from "@/lib/masks";
+import { masks } from "@/shared/lib/masks";
 import {
   hasDisabilityOptions,
   sexOptions,

@@ -4,7 +4,7 @@ import { AddItemButton } from "@/components/add-item-button";
 import { CertificationCard } from "../certification-card";
 import { CertificationModal } from "../certification-modal";
 import { FormSection } from "@/components/form";
-import { useResume } from "@/hooks/use-resume";
+import { useResume } from "../../_hooks/use-resume";
 import { useCertificationsListModel } from "./certifications-list.model";
 
 export function CertificationsList() {

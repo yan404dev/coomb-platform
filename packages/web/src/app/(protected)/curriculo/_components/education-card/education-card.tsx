@@ -1,7 +1,7 @@
 "use client";
 
 import { useEducationCardModel } from "./education-card.model";
-import { formatPeriod } from "@/lib/format";
+import { formatPeriod } from "@/shared/lib/format";
 
 interface EducationCardProps {
   onEdit?: (educationId: string) => void;
