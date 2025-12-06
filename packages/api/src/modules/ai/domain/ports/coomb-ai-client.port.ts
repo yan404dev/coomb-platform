@@ -1,6 +1,5 @@
 import { Observable } from "rxjs";
-import { ResumeEntity } from "../../../resume/entities/resume.entity";
-import { UserEntity } from "../../../user/entities/user.entity";
+import { Resume, User } from "@prisma/client";
 
 export interface OptimizationResult {
   optimized_resume: {
@@ -70,16 +69,13 @@ export interface GeneratePersonalityResult {
 
 export interface CoombAIClientPort {
   optimizeResume(
-    resume: ResumeEntity,
-    userProfile: UserEntity,
+    resume: Resume,
+    userProfile: User,
     jobDescription: string,
     generatePdf?: boolean
   ): Promise<OptimizationResult>;
 
-  generatePDF(
-    resume: ResumeEntity,
-    userProfile: UserEntity
-  ): Promise<PDFGenerationResult>;
+  generatePDF(resume: Resume, userProfile: User): Promise<PDFGenerationResult>;
 
   extractText(file: Buffer, filename: string): Promise<string>;
 
@@ -102,8 +98,8 @@ export interface CoombAIClientPort {
     userData?: {
       professional_summary?: string | null;
       career_goals?: string | null;
-      experiences?: any[];
-      skills?: any[];
+      experiences?: unknown[];
+      skills?: unknown[];
     }
   ): Promise<GeneratePersonalityResult>;
 }
