@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
-import { useResume } from "@/hooks/use-resume";
-import { aiService } from "@/services/ai.service";
-import type { Resume } from "@/entities";
+import { useResume } from "@/app/(protected)/curriculo/_hooks/use-resume";
+import { aiService } from "@/app/dashboard/_services/ai.service";
+import type { Resume } from "@/shared/types";
 
 const PERSONALITY_CONFIG = [
   { key: "executor", label: "Executor", color: "bg-red-500" },

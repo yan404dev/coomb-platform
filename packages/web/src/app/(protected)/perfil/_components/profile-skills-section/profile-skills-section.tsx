@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/entities";
+import type { Resume } from "@/shared/types";
 import { useProfileSkillsSectionModel } from "./profile-skills-section.model";
 
 interface ProfileSkillsSectionProps {

@@ -9,7 +9,7 @@ import { ProfileSectionItem } from "./_components/profile-section-card";
 import { ProfileSidebar } from "./_components/profile-sidebar";
 import { ProfileSkillsSection } from "./_components/profile-skills-section";
 import { CurriculumSection } from "../curriculo/_components/navigation-curriculum";
-import { useResume } from "@/hooks/use-resume";
+import { useResume } from "@/app/(protected)/curriculo/_hooks/use-resume";
 
 export default function Profile() {
   const { data: resume, isLoading } = useResume();

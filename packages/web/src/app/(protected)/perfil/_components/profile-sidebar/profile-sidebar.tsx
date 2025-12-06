@@ -10,7 +10,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
-import type { Resume } from "@/entities";
+import type { Resume } from "@/shared/types";
 import { useProfileSidebarModel } from "./profile-sidebar.model";
 
 interface ProfileSidebarProps {

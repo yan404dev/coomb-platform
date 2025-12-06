@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/entities";
+import type { Resume } from "@/shared/types";
 
 interface ProfilePersonalitySectionProps {
   resume?: Resume | null;

@@ -9,7 +9,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/entities";
+import type { Resume } from "@/shared/types";
 
 interface ProfileAboutSectionProps {
   resume?: Resume | null;

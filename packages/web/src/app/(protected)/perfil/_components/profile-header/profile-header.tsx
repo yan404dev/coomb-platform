@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Resume } from "@/entities";
+import type { Resume } from "@/shared/types";
 import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProfileHeaderProps {
