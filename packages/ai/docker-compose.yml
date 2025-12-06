@@ -1,0 +1,87 @@
+# ===================================================================
+# Coomb AI Platform - Docker Compose
+# ===================================================================
+# Development environment with all dependencies
+# ===================================================================
+
+version: '3.8'
+
+services:
+  # ===== Coomb AI Application =====
+  coomb-ai:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=development
+      - DEBUG=true
+      - LOG_LEVEL=DEBUG
+      - REDIS_URL=redis://redis:6379/0
+      - QDRANT_URL=http://qdrant:6333
+      - VECTOR_STORE_PROVIDER=qdrant
+      - STORAGE_PROVIDER=local
+      - LOCAL_STORAGE_PATH=/app/storage
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src:ro
+      - ./prompts:/app/prompts:ro
+      - ./templates:/app/templates:ro
+      - ./storage:/app/storage
+    depends_on:
+      - redis
+      - qdrant
+    networks:
+      - coomb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  # ===== Redis (Cache & Session) =====
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - coomb-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ===== Qdrant (Vector Store) =====
+  qdrant:
+    image: qdrant/qdrant:latest
+    ports:
+      - "6333:6333"
+      - "6334:6334"
+    volumes:
+      - qdrant_data:/qdrant/storage
+    environment:
+      - QDRANT__SERVICE__GRPC_PORT=6334
+    networks:
+      - coomb-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:6333/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  redis_data:
+    driver: local
+  qdrant_data:
+    driver: local
+
+networks:
+  coomb-network:
+    driver: bridge
+

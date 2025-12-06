@@ -1,0 +1,44 @@
+version: '3.8'
+
+services:
+  coomb-ai:
+    build:
+      context: ../../packages/ai
+    container_name: coomb-ai
+    ports:
+      - "8000:8000"
+    env_file:
+      - ../../packages/ai/.env
+    volumes:
+      - ../../packages/ai/storage:/app/storage
+    environment:
+      PORT: 8000
+      HOST: 0.0.0.0
+
+  coomb-api:
+    build:
+      context: ../../packages/api
+    container_name: coomb-api
+    ports:
+      - "3001:3001"
+    env_file:
+      - ../../packages/api/.env
+    environment:
+      COOMB_AI_URL: http://coomb-ai:8000
+      FRONTEND_URL: http://localhost:3000
+      PORT: 3001
+    depends_on:
+      - coomb-ai
+
+  coomb-web:
+    build:
+      context: ../../packages/web
+      args:
+        NEXT_PUBLIC_API_URL: http://localhost:3001
+    container_name: coomb-web
+    ports:
+      - "3000:3000"
+    environment:
+      NEXT_PUBLIC_API_URL: http://localhost:3001
+    depends_on:
+      - coomb-api

@@ -1,0 +1,220 @@
+/* Container principal */
+.logoHeroContainer {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+}
+
+.logoHeroBackground {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #10b981 0%, #059669 50%, #047857 100%);
+  border-radius: 24%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  box-shadow:
+    0 8px 24px rgba(16, 185, 129, 0.4),
+    0 4px 12px rgba(5, 150, 105, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
+}
+
+/* Círculos decorativos */
+.logoHeroCircle {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.1);
+  animation: circlePulse 4s ease-in-out infinite;
+}
+
+.logoHeroCircle1 {
+  width: 120%;
+  height: 120%;
+  top: -10%;
+  left: -10%;
+  animation-delay: 0s;
+}
+
+.logoHeroCircle2 {
+  width: 80%;
+  height: 80%;
+  top: 10%;
+  right: -20%;
+  animation-delay: 1s;
+}
+
+.logoHeroCircle3 {
+  width: 60%;
+  height: 60%;
+  bottom: -10%;
+  left: -10%;
+  animation-delay: 2s;
+}
+
+@keyframes circlePulse {
+  0%, 100% {
+    transform: scale(1) translate(0, 0);
+    opacity: 0.05;
+  }
+  50% {
+    transform: scale(1.1) translate(10px, 10px);
+    opacity: 0.1;
+  }
+}
+
+/* Linhas decorativas */
+.logoHeroLines {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+}
+
+.logoHeroLine {
+  position: absolute;
+  background: linear-gradient(90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  height: 2px;
+  animation: lineSlide 8s ease-in-out infinite;
+}
+
+.logoHeroLine1 {
+  width: 100%;
+  top: 20%;
+  animation-delay: 0s;
+}
+
+.logoHeroLine2 {
+  width: 80%;
+  top: 50%;
+  left: 10%;
+  animation-delay: 2s;
+}
+
+.logoHeroLine3 {
+  width: 90%;
+  top: 80%;
+  left: 5%;
+  animation-delay: 4s;
+}
+
+@keyframes lineSlide {
+  0%, 100% {
+    transform: translateX(-100%);
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateX(100%);
+  }
+}
+
+/* Logo principal */
+.logoHeroIcon {
+  position: relative;
+  z-index: 2;
+  width: 60%;
+  height: 60%;
+  color: white;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  animation: iconGlow 3s ease-in-out infinite;
+}
+
+@keyframes iconGlow {
+  0%, 100% {
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.3));
+  }
+  50% {
+    filter: drop-shadow(0 4px 20px rgba(255, 255, 255, 0.5));
+  }
+}
+
+/* Brilho superior */
+.logoHeroShine {
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: radial-gradient(
+    circle at 30% 30%,
+    rgba(255, 255, 255, 0.4) 0%,
+    rgba(255, 255, 255, 0.1) 20%,
+    transparent 50%
+  );
+  pointer-events: none;
+  animation: shineRotate 10s linear infinite;
+}
+
+@keyframes shineRotate {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Efeito hover desabilitado - mantém apenas animações internas */
+
+/* Partículas decorativas */
+.logoHeroParticle {
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 50%;
+  animation: particleFloat 6s ease-in-out infinite;
+}
+
+.logoHeroParticle1 {
+  top: 15%;
+  left: 20%;
+  animation-delay: 0s;
+}
+
+.logoHeroParticle2 {
+  top: 65%;
+  right: 25%;
+  animation-delay: 1.5s;
+}
+
+.logoHeroParticle3 {
+  bottom: 20%;
+  left: 30%;
+  animation-delay: 3s;
+}
+
+.logoHeroParticle4 {
+  top: 40%;
+  right: 15%;
+  animation-delay: 4.5s;
+}
+
+@keyframes particleFloat {
+  0%, 100% {
+    transform: translateY(0) scale(1);
+    opacity: 0;
+  }
+  25% {
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(-30px) scale(1.5);
+    opacity: 0.8;
+  }
+  75% {
+    opacity: 0.3;
+  }
+}

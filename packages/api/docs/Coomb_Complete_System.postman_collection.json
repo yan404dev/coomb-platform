@@ -1,0 +1,480 @@
+{
+  "info": {
+    "name": "Coomb - Sistema Completo",
+    "description": "Collection completa para testar todo o sistema Coomb (API Node.js + PDF Service Python)",
+    "version": "1.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "apiUrl",
+      "value": "http://localhost:3001",
+      "type": "string",
+      "description": "URL da API Node.js"
+    },
+    {
+      "key": "pdfUrl", 
+      "value": "http://localhost:8001",
+      "type": "string",
+      "description": "URL do serviço Python PDF"
+    },
+    {
+      "key": "token",
+      "value": "",
+      "type": "string",
+      "description": "JWT Token de autenticação"
+    },
+    {
+      "key": "userId",
+      "value": "",
+      "type": "string"
+    },
+    {
+      "key": "resumeId", 
+      "value": "",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "🐍 PDF Service (Python)",
+      "description": "Testes diretos do serviço Python de geração de PDF",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pdfUrl}}/health",
+              "host": ["{{pdfUrl}}"],
+              "path": ["health"]
+            },
+            "description": "Verifica se o serviço PDF está funcionando"
+          }
+        },
+        {
+          "name": "Generate PDF Completo",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"template_id\": \"modern\",\n  \"content\": {\n    \"personal_info\": {\n      \"name\": \"Maria Santos\",\n      \"email\": \"maria.santos@email.com\",\n      \"phone\": \"+55 11 98765-4321\",\n      \"location\": \"São Paulo, SP\",\n      \"linkedin\": \"linkedin.com/in/mariasantos\",\n      \"github\": \"github.com/mariasantos\"\n    },\n    \"experience\": [\n      {\n        \"company\": \"TechStart Ltda\",\n        \"position\": \"Desenvolvedora Senior\",\n        \"description\": \"Liderança técnica em projetos React/Node.js, mentoria de desenvolvedores júnior\",\n        \"startDate\": \"2023-01\",\n        \"endDate\": null,\n        \"current\": true\n      },\n      {\n        \"company\": \"Digital Solutions\",\n        \"position\": \"Desenvolvedora Full Stack\",\n        \"description\": \"Desenvolvimento de APIs REST e interfaces responsivas\",\n        \"startDate\": \"2021-06\",\n        \"endDate\": \"2022-12\",\n        \"current\": false\n      }\n    ],\n    \"education\": [\n      {\n        \"institution\": \"Universidade de São Paulo\",\n        \"degree\": \"Bacharelado\",\n        \"field\": \"Engenharia de Software\",\n        \"startDate\": \"2017-02\",\n        \"endDate\": \"2020-12\",\n        \"current\": false\n      }\n    ],\n    \"skills\": [\n      \"JavaScript\",\n      \"TypeScript\", \n      \"React\",\n      \"Node.js\",\n      \"Python\",\n      \"Docker\",\n      \"PostgreSQL\",\n      \"MongoDB\",\n      \"AWS\",\n      \"Git\"\n    ]\n  },\n  \"style\": {\n    \"font\": \"Helvetica\",\n    \"color_scheme\": \"#2c3e50\",\n    \"layout\": \"modern\"\n  }\n}"
+            },
+            "url": {
+              "raw": "{{pdfUrl}}/generate-pdf",
+              "host": ["{{pdfUrl}}"],
+              "path": ["generate-pdf"]
+            },
+            "description": "Gera um PDF completo com todos os dados"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto-download PDF quando response for sucesso",
+                  "if (pm.response.code === 200) {",
+                  "    // Nome do arquivo com timestamp",
+                  "    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');",
+                  "    const fileName = `curriculo-direto-${timestamp}.pdf`;",
+                  "    ",
+                  "    // Salva o PDF automaticamente",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #e8f5e8; border-radius: 8px; border: 2px solid #4caf50;'>",
+                  "            <h3 style='color: #2e7d32; margin-top: 0;'>✅ PDF Gerado com Sucesso!</h3>",
+                  "            <p><strong>Arquivo:</strong> ${fileName}</p>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <p><strong>Tamanho:</strong> ${(pm.response.stream.length / 1024).toFixed(2)} KB</p>",
+                  "            <div style='margin-top: 15px; padding: 10px; background: white; border-radius: 4px;'>",
+                  "                <p style='margin: 0; color: #666;'><em>O PDF foi baixado automaticamente para sua pasta de Downloads.</em></p>",
+                  "            </div>",
+                  "        </div>`",
+                  "    });",
+                  "    ",
+                  "    // Log do sucesso",
+                  "    console.log(`PDF gerado: ${fileName}`);",
+                  "} else {",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #ffebee; border-radius: 8px; border: 2px solid #f44336;'>",
+                  "            <h3 style='color: #c62828; margin-top: 0;'>❌ Erro na Geração do PDF</h3>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <p><strong>Erro:</strong> ${pm.response.text()}</p>",
+                  "        </div>`",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Root Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{pdfUrl}}/",
+              "host": ["{{pdfUrl}}"],
+              "path": [""]
+            },
+            "description": "Informações do serviço PDF"
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔐 Autenticação (Node.js API)",
+      "description": "Endpoints de autenticação da API Node.js",
+      "item": [
+        {
+          "name": "Register User",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('userId', response.user.id);",
+                  "    console.log('Usuário criado:', response.user.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@coomb.com\",\n  \"fullName\": \"Usuario Teste\",\n  \"password\": \"123456\",\n  \"planType\": \"free\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/auth/register",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 200) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('token', response.access_token);",
+                  "    console.log('Token JWT salvo:', response.access_token);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"teste@coomb.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/auth/login",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/auth/me",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "📄 Currículos (Node.js API)",
+      "description": "CRUD de currículos",
+      "item": [
+        {
+          "name": "Create Resume",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "if (pm.response.code === 201) {",
+                  "    const response = pm.response.json();",
+                  "    pm.collectionVariables.set('resumeId', response.id);",
+                  "    console.log('Currículo criado:', response.id);",
+                  "}"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Meu Currículo Desenvolvedor\",\n  \"content\": {\n    \"personalInfo\": {\n      \"name\": \"João Silva\",\n      \"email\": \"joao@email.com\",\n      \"phone\": \"+55 11 99999-9999\",\n      \"location\": \"São Paulo, SP\"\n    },\n    \"experience\": [\n      {\n        \"company\": \"Tech Corp\",\n        \"position\": \"Desenvolvedor Full Stack\",\n        \"description\": \"Desenvolvimento de aplicações web usando React e Node.js\",\n        \"startDate\": \"2022-01\",\n        \"endDate\": \"2024-09\",\n        \"current\": false\n      }\n    ],\n    \"education\": [\n      {\n        \"institution\": \"USP\",\n        \"degree\": \"Bacharelado\",\n        \"field\": \"Ciência da Computação\",\n        \"startDate\": \"2018-02\",\n        \"endDate\": \"2021-12\",\n        \"current\": false\n      }\n    ],\n    \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"Python\"]\n  }\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/resumes",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "resumes"]
+            }
+          }
+        },
+        {
+          "name": "List My Resumes",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/resumes",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "resumes"]
+            }
+          }
+        },
+        {
+          "name": "Get Resume by ID",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/resumes/{{resumeId}}",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "resumes", "{{resumeId}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "🔄 Integração Completa",
+      "description": "Testes que integram API Node.js + PDF Service Python",
+      "item": [
+        {
+          "name": "Generate PDF from Resume",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"templateSlug\": \"modern\",\n  \"jobDescription\": \"Vaga para desenvolvedor full stack com experiência em React e Node.js\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/pdf/resumes/{{resumeId}}/generate",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "pdf", "resumes", "{{resumeId}}", "generate"]
+            },
+            "description": "Gera PDF do currículo usando a API Node.js que chama o serviço Python"
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto-download PDF quando response for sucesso",
+                  "if (pm.response.code === 200) {",
+                  "    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');",
+                  "    const fileName = `curriculo-api-${timestamp}.pdf`;",
+                  "    ",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #e8f5e8; border-radius: 8px; border: 2px solid #4caf50;'>",
+                  "            <h3 style='color: #2e7d32; margin-top: 0;'>🚀 PDF Gerado via API!</h3>",
+                  "            <p><strong>Arquivo:</strong> ${fileName}</p>",
+                  "            <p><strong>Resume ID:</strong> {{resumeId}}</p>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <div style='margin-top: 15px; padding: 10px; background: white; border-radius: 4px;'>",
+                  "                <p style='margin: 0; color: #666;'><em>PDF processado pela API Node.js → Serviço Python</em></p>",
+                  "            </div>",
+                  "        </div>`",
+                  "    });",
+                  "    ",
+                  "    console.log(`PDF gerado via API: ${fileName}`);",
+                  "} else {",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #ffebee; border-radius: 8px; border: 2px solid #f44336;'>",
+                  "            <h3 style='color: #c62828; margin-top: 0;'>❌ Erro na API</h3>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <p><strong>Resume ID:</strong> {{resumeId}}</p>",
+                  "            <p><strong>Erro:</strong> ${pm.response.text()}</p>",
+                  "        </div>`",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get PDF Templates",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              }
+            ],
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/pdf/templates",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "pdf", "templates"]
+            }
+          }
+        },
+        {
+          "name": "Generate from Python Code",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{token}}"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pythonCode\": \"print('CURRÍCULO CUSTOMIZADO')\\nprint('===================')\\nprint('Nome: João Custom')\\nprint('Email: joao@custom.com')\",\n  \"fileName\": \"curriculo-custom\"\n}"
+            },
+            "url": {
+              "raw": "{{apiUrl}}/api/v1/pdf/generate-from-code",
+              "host": ["{{apiUrl}}"],
+              "path": ["api", "v1", "pdf", "generate-from-code"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "// Auto-download PDF quando response for sucesso",
+                  "if (pm.response.code === 200) {",
+                  "    const timestamp = new Date().toISOString().replace(/[:.]/g, '-');",
+                  "    const fileName = `curriculo-custom-${timestamp}.pdf`;",
+                  "    ",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #e3f2fd; border-radius: 8px; border: 2px solid #1976d2;'>",
+                  "            <h3 style='color: #1565c0; margin-top: 0;'>🐍 PDF Gerado com Python Code!</h3>",
+                  "            <p><strong>Arquivo:</strong> ${fileName}</p>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <div style='margin-top: 15px; padding: 10px; background: white; border-radius: 4px;'>",
+                  "                <p style='margin: 0; color: #666;'><em>PDF gerado executando código Python personalizado</em></p>",
+                  "            </div>",
+                  "        </div>`",
+                  "    });",
+                  "    ",
+                  "    console.log(`PDF customizado gerado: ${fileName}`);",
+                  "} else {",
+                  "    pm.visualizer.set({",
+                  "        template: `<div style='padding: 20px; background: #ffebee; border-radius: 8px; border: 2px solid #f44336;'>",
+                  "            <h3 style='color: #c62828; margin-top: 0;'>❌ Erro no Python Code</h3>",
+                  "            <p><strong>Status:</strong> ${pm.response.status}</p>",
+                  "            <p><strong>Erro:</strong> ${pm.response.text()}</p>",
+                  "        </div>`",
+                  "    });",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "🧪 Testes Rápidos",
+      "description": "Comandos curl para copiar e colar no terminal",
+      "item": [
+        {
+          "name": "🐍 Curl - PDF Service",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "about:blank",
+              "protocol": "about",
+              "host": ["blank"]
+            },
+            "description": "# Teste completo do PDF Service\n\n```bash\ncurl -X POST http://localhost:8001/generate-pdf \\\n  -H \"Content-Type: application/json\" \\\n  -d '{\n    \"template_id\": \"modern\",\n    \"content\": {\n      \"personal_info\": {\n        \"name\": \"Maria Santos\",\n        \"email\": \"maria.santos@email.com\",\n        \"phone\": \"+55 11 98765-4321\",\n        \"location\": \"São Paulo, SP\"\n      },\n      \"experience\": [{\n        \"company\": \"TechStart\",\n        \"position\": \"Dev Senior\",\n        \"description\": \"Desenvolvimento React/Node.js\",\n        \"startDate\": \"2023-01\",\n        \"current\": true\n      }],\n      \"education\": [{\n        \"institution\": \"USP\",\n        \"degree\": \"Bacharelado\",\n        \"field\": \"Engenharia de Software\",\n        \"startDate\": \"2017-02\",\n        \"endDate\": \"2020-12\"\n      }],\n      \"skills\": [\"JavaScript\", \"React\", \"Node.js\", \"Python\"]\n    }\n  }'\n```\n\n# Health check\n```bash\ncurl http://localhost:8001/health\n```"
+          }
+        }
+      ]
+    }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [
+      {
+        "key": "token",
+        "value": "{{token}}",
+        "type": "string"
+      }
+    ]
+  }
+}

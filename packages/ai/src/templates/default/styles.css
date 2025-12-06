@@ -1,0 +1,181 @@
+/* ==========================================================================
+   Classic Resume Template - Coomb AI
+   Traditional, ATS-optimized single-column layout
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   Page Setup
+   -------------------------------------------------------------------------- */
+@page {
+    size: A4;
+    margin: 2cm;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Times New Roman', Times, Georgia, serif;
+    font-size: 11pt;
+    line-height: 1.4;
+    color: #333333;
+    background: #ffffff;
+}
+
+.resume-container {
+    max-width: 100%;
+}
+
+/* --------------------------------------------------------------------------
+   Header
+   -------------------------------------------------------------------------- */
+.resume-header {
+    text-align: center;
+    margin-bottom: 20pt;
+    padding-bottom: 12pt;
+    border-bottom: 1pt solid #cccccc;
+}
+
+.candidate-name {
+    font-size: 20pt;
+    font-weight: bold;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 2pt;
+    margin-bottom: 8pt;
+}
+
+.contact-line {
+    font-size: 10pt;
+    color: #666666;
+    line-height: 1.6;
+}
+
+/* --------------------------------------------------------------------------
+   Sections
+   -------------------------------------------------------------------------- */
+.section {
+    margin-bottom: 16pt;
+    page-break-inside: avoid;
+}
+
+.section-title {
+    font-size: 12pt;
+    font-weight: bold;
+    color: #333333;
+    text-transform: uppercase;
+    letter-spacing: 1pt;
+    border-bottom: 1pt solid #333333;
+    padding-bottom: 3pt;
+    margin-bottom: 10pt;
+}
+
+.section-content {
+    padding-left: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Entries (Experience, Education)
+   -------------------------------------------------------------------------- */
+.entry {
+    margin-bottom: 12pt;
+    page-break-inside: avoid;
+}
+
+.entry:last-child {
+    margin-bottom: 0;
+}
+
+.entry-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 2pt;
+}
+
+.entry-title {
+    font-size: 11pt;
+    font-weight: bold;
+    color: #333333;
+}
+
+.entry-date {
+    font-size: 10pt;
+    font-style: italic;
+    color: #666666;
+}
+
+.entry-subtitle {
+    font-size: 10pt;
+    color: #666666;
+    margin-bottom: 4pt;
+}
+
+.entry-description {
+    font-size: 10pt;
+    color: #444444;
+    margin-bottom: 4pt;
+    text-align: justify;
+}
+
+.entry-list {
+    list-style-position: outside;
+    padding-left: 18pt;
+    margin-top: 4pt;
+}
+
+.entry-list li {
+    font-size: 10pt;
+    color: #444444;
+    margin-bottom: 3pt;
+}
+
+/* --------------------------------------------------------------------------
+   Skills & Languages
+   -------------------------------------------------------------------------- */
+.skills-text,
+.languages-text {
+    font-size: 10pt;
+    color: #444444;
+    line-height: 1.5;
+}
+
+.languages-text strong {
+    color: #333333;
+}
+
+/* --------------------------------------------------------------------------
+   Certifications
+   -------------------------------------------------------------------------- */
+.certifications-list {
+    list-style-position: outside;
+    padding-left: 18pt;
+}
+
+.certifications-list li {
+    font-size: 10pt;
+    color: #444444;
+    margin-bottom: 2pt;
+}
+
+/* --------------------------------------------------------------------------
+   Print Optimizations
+   -------------------------------------------------------------------------- */
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+    
+    .section {
+        page-break-inside: avoid;
+    }
+    
+    .entry {
+        page-break-inside: avoid;
+    }
+}
+
