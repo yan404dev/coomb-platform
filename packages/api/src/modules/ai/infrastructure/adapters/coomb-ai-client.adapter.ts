@@ -26,6 +26,8 @@ interface ExperienceInput {
   end_date?: string;
   current?: boolean;
   achievements?: string[];
+  work_mode?: string;
+  country?: string;
 }
 
 interface EducationInput {
@@ -39,6 +41,7 @@ interface EducationInput {
   endDate?: string;
   end_date?: string;
   current?: boolean;
+  country?: string;
 }
 
 interface SkillInput {
@@ -117,7 +120,12 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
           email: userProfile.email,
           phone: userProfile.phone || null,
           linkedin: userProfile.linkedin || null,
+          github:
+            (userProfile as unknown as { github?: string }).github || null,
           location: this.buildLocation(userProfile),
+          open_to_remote:
+            (userProfile as unknown as { open_to_remote?: boolean })
+              .open_to_remote || false,
         },
         professional_summary: userProfile.professional_summary || null,
         experiences: this.mapExperiencesForPDF(resume.experiences),
@@ -246,6 +254,8 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
       is_current: boolean;
     };
     achievements: string[];
+    work_mode?: string | null;
+    country?: string | null;
   }> {
     if (!Array.isArray(experiences)) return [];
     return experiences.map((exp: unknown) => {
@@ -260,6 +270,8 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
           is_current: e.current ?? !e.endDate,
         },
         achievements: e.achievements || [],
+        work_mode: e.work_mode || null,
+        country: e.country || null,
       };
     });
   }
@@ -273,6 +285,7 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
       end_formatted: string | null;
       is_current: boolean;
     };
+    country?: string | null;
   }> {
     if (!Array.isArray(educations)) return [];
     return educations.map((edu: unknown) => {
@@ -286,6 +299,7 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
           end_formatted: e.endDate || e.end_date || null,
           is_current: e.current ?? false,
         },
+        country: e.country || null,
       };
     });
   }
