@@ -1,6 +1,12 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException } from "@nestjs/common";
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
+import { Chat } from "@prisma/client";
 import { ChatRepositoryPort } from "../../domain/ports/chat.repository.port";
-import { ChatEntity } from "../../entities/chat.entity";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 
 export interface GetChatRequest {
   chatId: string;
@@ -10,13 +16,13 @@ export interface GetChatRequest {
 @Injectable()
 export class GetChatUseCase {
   constructor(
-    @Inject("CHAT_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.CHAT_REPOSITORY_PORT)
     private readonly repository: ChatRepositoryPort
   ) {}
 
-  async execute(request: GetChatRequest): Promise<ChatEntity> {
+  async execute(request: GetChatRequest): Promise<Chat> {
     const chat = await this.repository.findById(request.chatId);
-    
+
     if (!chat) {
       throw new NotFoundException("Conversa não encontrada");
     }
@@ -32,4 +38,3 @@ export class GetChatUseCase {
     return chat;
   }
 }
-

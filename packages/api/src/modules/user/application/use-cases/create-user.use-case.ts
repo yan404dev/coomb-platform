@@ -1,7 +1,8 @@
 import { Injectable, Inject, ConflictException } from "@nestjs/common";
+import { User } from "@prisma/client";
 import { UserRepositoryPort } from "../../domain/ports/user.repository.port";
-import { UserEntity } from "../../entities/user.entity";
 import { CreateUserDto } from "../../dto/create-user.dto";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 import * as bcrypt from "bcryptjs";
 
 export interface CreateUserRequest {
@@ -11,11 +12,11 @@ export interface CreateUserRequest {
 @Injectable()
 export class CreateUserUseCase {
   constructor(
-    @Inject("USER_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.USER_REPOSITORY_PORT)
     private readonly repository: UserRepositoryPort
   ) {}
 
-  async execute(request: CreateUserRequest): Promise<UserEntity> {
+  async execute(request: CreateUserRequest): Promise<User> {
     const existingUser = await this.repository.findByEmail(request.data.email);
     if (existingUser) {
       throw new ConflictException("Email já está em uso");
@@ -29,4 +30,3 @@ export class CreateUserUseCase {
     });
   }
 }
-

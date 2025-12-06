@@ -1,15 +1,15 @@
 import { Injectable } from "@nestjs/common";
+import { User } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
-import { UserEntity } from "../../../user/entities/user.entity";
 import { JwtPayload } from "../../interfaces/jwt-payload.interface";
 
 export interface LoginRequest {
-  user: UserEntity;
+  user: User;
 }
 
 export interface LoginResponse {
   access_token: string;
-  user: UserEntity;
+  user: User;
 }
 
 @Injectable()
@@ -28,4 +28,3 @@ export class LoginUseCase {
     };
   }
 }
-

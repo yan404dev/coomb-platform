@@ -1,18 +1,25 @@
 import { Injectable, Inject } from "@nestjs/common";
-import { GeneratedResumeEntity } from "../../entities/generated-resume.entity";
+import { GeneratedResume } from "@prisma/client";
 import { CreateGeneratedResumeDto } from "../../dto/create-generated-resume.dto";
 import { UpdateGeneratedResumeDto } from "../../dto/update-generated-resume.dto";
-import { GeneratedResumeRepositoryPort } from "../domain/ports/generated-resume.repository.port";
+import { GeneratedResumeRepositoryPort } from "../../domain/ports/generated-resume.repository.port";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 
 @Injectable()
 export class GeneratedResumeService {
   constructor(
-    @Inject("GENERATED_RESUME_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.GENERATED_RESUME_REPOSITORY_PORT)
     private readonly repository: GeneratedResumeRepositoryPort
   ) {}
 
-  async create(userId: string, createGeneratedResumeDto: CreateGeneratedResumeDto): Promise<any> {
-    const entity = await this.repository.create(userId, createGeneratedResumeDto);
+  async create(
+    userId: string,
+    createGeneratedResumeDto: CreateGeneratedResumeDto
+  ): Promise<{ id: string; title: string; createdAt: Date }> {
+    const entity = await this.repository.create(
+      userId,
+      createGeneratedResumeDto
+    );
     return {
       id: entity.id,
       title: entity.title,
@@ -20,11 +27,14 @@ export class GeneratedResumeService {
     };
   }
 
-  async findAll(userId: string, baseResumeId?: string): Promise<GeneratedResumeEntity[]> {
+  async findAll(
+    userId: string,
+    baseResumeId?: string
+  ): Promise<GeneratedResume[]> {
     return this.repository.findAll(userId, baseResumeId);
   }
 
-  async findOne(id: string, userId: string): Promise<GeneratedResumeEntity> {
+  async findOne(id: string, userId: string): Promise<GeneratedResume> {
     return this.repository.findById(id, userId);
   }
 
@@ -32,7 +42,7 @@ export class GeneratedResumeService {
     id: string,
     userId: string,
     updateGeneratedResumeDto: UpdateGeneratedResumeDto
-  ): Promise<GeneratedResumeEntity> {
+  ): Promise<GeneratedResume> {
     return this.repository.update(id, userId, updateGeneratedResumeDto);
   }
 
@@ -40,4 +50,3 @@ export class GeneratedResumeService {
     return this.repository.delete(id, userId);
   }
 }
-

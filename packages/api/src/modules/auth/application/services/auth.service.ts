@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { User } from "@prisma/client";
 import { UserService } from "../../../user/application/services/user.service";
-import { UserEntity } from "../../../user/entities/user.entity";
 import { OAuthUser } from "../../interfaces/oauth-user.interface";
 import { LoginUseCase } from "../use-cases/login.use-case";
 import { RegisterUseCase } from "../use-cases/register.use-case";
@@ -16,11 +16,11 @@ export class AuthService {
     private readonly validateUserUseCase: ValidateUserUseCase
   ) {}
 
-  async validateUser(email: string, password: string): Promise<any> {
+  async validateUser(email: string, password: string): Promise<User | null> {
     return this.validateUserUseCase.execute({ email, password });
   }
 
-  async login(user: UserEntity) {
+  async login(user: User) {
     return this.loginUseCase.execute({ user });
   }
 
@@ -32,7 +32,7 @@ export class AuthService {
     return this.userService.findById(userId);
   }
 
-  async validateOAuthUser(oauthUser: OAuthUser): Promise<UserEntity> {
+  async validateOAuthUser(oauthUser: OAuthUser): Promise<User> {
     let user = await this.userService.findByEmail(oauthUser.email);
 
     if (!user) {
@@ -48,4 +48,3 @@ export class AuthService {
     return user;
   }
 }
-

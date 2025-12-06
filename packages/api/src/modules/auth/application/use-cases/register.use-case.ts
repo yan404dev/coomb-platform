@@ -1,9 +1,9 @@
 import { Injectable, ConflictException } from "@nestjs/common";
+import { User } from "@prisma/client";
 import { JwtService } from "@nestjs/jwt";
 import { UserService } from "../../../user/application/services/user.service";
 import { RegisterDto } from "../../dto/register.dto";
 import { JwtPayload } from "../../interfaces/jwt-payload.interface";
-import { UserEntity } from "../../../user/entities/user.entity";
 
 export interface RegisterRequest {
   data: RegisterDto;
@@ -11,7 +11,7 @@ export interface RegisterRequest {
 
 export interface RegisterResponse {
   access_token: string;
-  user: UserEntity;
+  user: User;
 }
 
 @Injectable()
@@ -42,4 +42,3 @@ export class RegisterUseCase {
     }
   }
 }
-

@@ -1,8 +1,14 @@
-import { Injectable, Inject, NotFoundException, ForbiddenException } from "@nestjs/common";
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  ForbiddenException,
+} from "@nestjs/common";
+import { Message } from "@prisma/client";
 import { MessageRepositoryPort } from "../../domain/ports/message.repository.port";
 import { ChatRepositoryPort } from "../../domain/ports/chat.repository.port";
-import { MessageEntity } from "../../entities/message.entity";
 import { CreateMessageDto } from "../../dto/create-message.dto";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 
 export interface CreateMessageRequest {
   chatId: string | null | undefined;
@@ -13,14 +19,19 @@ export interface CreateMessageRequest {
 @Injectable()
 export class CreateMessageUseCase {
   constructor(
-    @Inject("MESSAGE_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.MESSAGE_REPOSITORY_PORT)
     private readonly messageRepository: MessageRepositoryPort,
-    @Inject("CHAT_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.CHAT_REPOSITORY_PORT)
     private readonly chatRepository: ChatRepositoryPort
   ) {}
 
-  async execute(request: CreateMessageRequest): Promise<{ message: MessageEntity; chatId: string }> {
-    const currentChatId = await this.resolveOrCreateChat(request.chatId, request.userId);
+  async execute(
+    request: CreateMessageRequest
+  ): Promise<{ message: Message; chatId: string }> {
+    const currentChatId = await this.resolveOrCreateChat(
+      request.chatId,
+      request.userId
+    );
     await this.validateChatAccess(currentChatId, request.userId);
 
     const message = await this.messageRepository.create({
@@ -34,7 +45,10 @@ export class CreateMessageUseCase {
     };
   }
 
-  private async resolveOrCreateChat(chatId: string | null | undefined, userId: string | null): Promise<string> {
+  private async resolveOrCreateChat(
+    chatId: string | null | undefined,
+    userId: string | null
+  ): Promise<string> {
     if (!chatId) {
       const newChat = await this.chatRepository.create(userId, {});
       return newChat.id;
@@ -54,11 +68,15 @@ export class CreateMessageUseCase {
     return chatId;
   }
 
-  private async validateChatAccess(chatId: string, userId: string | null): Promise<void> {
+  private async validateChatAccess(
+    chatId: string,
+    userId: string | null
+  ): Promise<void> {
     const chat = await this.chatRepository.findById(chatId);
     if (!chat) throw new NotFoundException("Conversa não encontrada");
-    if (userId && chat.user_id !== userId) throw new ForbiddenException("Acesso negado");
-    if (!userId && chat.user_id !== null) throw new ForbiddenException("Acesso negado");
+    if (userId && chat.user_id !== userId)
+      throw new ForbiddenException("Acesso negado");
+    if (!userId && chat.user_id !== null)
+      throw new ForbiddenException("Acesso negado");
   }
 }
-

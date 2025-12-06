@@ -1,6 +1,7 @@
 import { Injectable, Inject } from "@nestjs/common";
+import { Resume } from "@prisma/client";
 import { ResumeRepositoryPort } from "../../domain/ports/resume.repository.port";
-import { ResumeEntity } from "../../entities/resume.entity";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 
 export interface CreateResumeRequest {
   userId: string;
@@ -9,12 +10,11 @@ export interface CreateResumeRequest {
 @Injectable()
 export class CreateResumeUseCase {
   constructor(
-    @Inject("RESUME_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.RESUME_REPOSITORY_PORT)
     private readonly repository: ResumeRepositoryPort
   ) {}
 
-  async execute(request: CreateResumeRequest): Promise<ResumeEntity> {
+  async execute(request: CreateResumeRequest): Promise<Resume> {
     return this.repository.create(request.userId);
   }
 }
-

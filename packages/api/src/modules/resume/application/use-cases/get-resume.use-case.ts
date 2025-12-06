@@ -1,6 +1,7 @@
-import { Injectable, Inject, NotFoundException } from "@nestjs/common";
+import { Injectable, Inject } from "@nestjs/common";
+import { Resume } from "@prisma/client";
 import { ResumeRepositoryPort } from "../../domain/ports/resume.repository.port";
-import { ResumeEntity } from "../../entities/resume.entity";
+import { INJECTION_TOKENS } from "../../../../common/constants/injection-tokens";
 
 export interface GetResumeRequest {
   userId: string;
@@ -9,11 +10,11 @@ export interface GetResumeRequest {
 @Injectable()
 export class GetResumeUseCase {
   constructor(
-    @Inject("RESUME_REPOSITORY_PORT")
+    @Inject(INJECTION_TOKENS.RESUME_REPOSITORY_PORT)
     private readonly repository: ResumeRepositoryPort
   ) {}
 
-  async execute(request: GetResumeRequest): Promise<ResumeEntity> {
+  async execute(request: GetResumeRequest): Promise<Resume> {
     let resume = await this.repository.findByUserId(request.userId);
 
     if (!resume) {
@@ -23,4 +24,3 @@ export class GetResumeUseCase {
     return resume;
   }
 }
-
