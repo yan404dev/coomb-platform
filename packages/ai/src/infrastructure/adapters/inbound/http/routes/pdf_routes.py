@@ -1,10 +1,8 @@
-"""Rotas de geração de PDF."""
-
 from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import Optional
+from typing import Optional, Union
 
 from fastapi import APIRouter, HTTPException
 from fastapi.responses import FileResponse
@@ -25,11 +23,18 @@ class ContactInfoSchema(BaseModel):
     linkedin: Optional[str] = None
     github: Optional[str] = None
     location: Optional[str] = None
+    open_to_remote: Optional[bool] = False
 
 
 class SkillSchema(BaseModel):
     name: str
     level: Optional[str] = None
+
+
+class SkillsSchema(BaseModel):
+    languages: Optional[list[str]] = None
+    frameworks: Optional[list[str]] = None
+    tools: Optional[list[str]] = None
 
 
 class LanguageSchema(BaseModel):
@@ -49,6 +54,8 @@ class ExperienceSchema(BaseModel):
     description: Optional[str] = None
     date_range: DateRangeSchema
     achievements: list[str] = Field(default_factory=list)
+    work_mode: Optional[str] = None
+    country: Optional[str] = None
 
 
 class EducationSchema(BaseModel):
@@ -56,6 +63,13 @@ class EducationSchema(BaseModel):
     degree: str
     field_of_study: Optional[str] = None
     date_range: Optional[DateRangeSchema] = None
+    country: Optional[str] = None
+
+
+class CertificationSchema(BaseModel):
+    name: Optional[str] = None
+    issuer: Optional[str] = None
+    date: Optional[str] = None
 
 
 class ResumeSchema(BaseModel):
@@ -64,9 +78,9 @@ class ResumeSchema(BaseModel):
     professional_summary: Optional[str] = None
     experiences: list[ExperienceSchema] = Field(default_factory=list)
     educations: list[EducationSchema] = Field(default_factory=list)
-    skills: list[SkillSchema] = Field(default_factory=list)
+    skills: Optional[Union[SkillsSchema, list[SkillSchema]]] = Field(default_factory=list)
     languages: list[LanguageSchema] = Field(default_factory=list)
-    certifications: list[str] = Field(default_factory=list)
+    certifications: list[Union[str, CertificationSchema]] = Field(default_factory=list)
 
 
 class GeneratePDFRequest(BaseModel):
@@ -92,7 +106,6 @@ class TemplatesListResponse(BaseModel):
 
 @router.post("/generate", response_model=PDFResponse)
 async def generate_pdf(request: GeneratePDFRequest):
-    """Gera PDF de currículo."""
     try:
         render_request = PDFRenderRequest(
             resume=request.resume.model_dump(),
@@ -114,7 +127,6 @@ async def generate_pdf(request: GeneratePDFRequest):
 
 @router.get("/files/{filename}")
 async def download_pdf(filename: str):
-    """Download de PDF gerado."""
     filepath = Path("storage") / filename
 
     if not filepath.exists():
@@ -125,7 +137,6 @@ async def download_pdf(filename: str):
 
 @router.get("/templates", response_model=TemplatesListResponse)
 async def get_templates():
-    """Lista templates disponíveis."""
     templates = pdf_adapter.get_available_templates()
     return TemplatesListResponse(
         templates=[TemplateResponse(id=t.id, name=t.name, description=t.description) for t in templates]
