@@ -7,8 +7,11 @@ from pydantic import BaseModel, Field
 from domain.ports.outbound.llm_provider_port import LLMMessage
 from infrastructure.adapters.outbound.llm.openai_adapter import OpenAIAdapter
 from infrastructure.adapters.outbound.vector_store.qdrant_adapter import QdrantAdapter
+from infrastructure.adapters.outbound.pdf.weasyprint_adapter import WeasyPrintAdapter
 from application.services.embedding_service import EmbeddingService
 from application.services.rag_service import RAGService
+from application.services.chat_context_service import ChatContextService
+from application.services.resume_optimizer_chat_service import ResumeOptimizerChatService
 from infrastructure.config import get_settings
 
 logger = logging.getLogger(__name__)
@@ -16,6 +19,9 @@ router = APIRouter(prefix="/api/v1/chat", tags=["Chat"])
 
 settings = get_settings()
 llm_adapter = OpenAIAdapter()
+pdf_adapter = WeasyPrintAdapter()
+chat_context_service = ChatContextService()
+optimizer_service = ResumeOptimizerChatService(llm_adapter, pdf_adapter)
 
 vector_store = QdrantAdapter()
 embedding_service = EmbeddingService()
@@ -38,6 +44,7 @@ class ChatCompletionResponse(BaseModel):
     content: str
     model: str
     tokens_used: int
+    pdf_url: Optional[str] = None
 
 
 class ChatStreamChunk(BaseModel):
@@ -54,28 +61,22 @@ async def chat_completion(request: ChatCompletionRequest):
         )
 
     try:
-        llm_messages = [
-            LLMMessage(role=msg.role, content=msg.content) for msg in request.messages
-        ]
+        messages_dict = [{"role": m.role, "content": m.content} for m in request.messages]
+        context = chat_context_service.analyze_context(messages_dict)
 
-        last_user_message = None
-        for msg in reversed(request.messages):
-            if msg.role == "user":
-                last_user_message = msg.content
-                break
+        if context.is_optimization_request:
+            logger.info("Detected optimization request - generating optimized resume")
+            result = await optimizer_service.process_optimization(context, messages_dict)
+            return ChatCompletionResponse(
+                content=result.content,
+                model=result.model,
+                tokens_used=result.tokens_used,
+                pdf_url=result.pdf_url,
+            )
 
-        if last_user_message and rag_service._embedding_service.is_configured():
-            try:
-                enriched_query = await rag_service.enrich_prompt(
-                    user_query=last_user_message,
-                    limit=3,
-                )
-                if enriched_query != last_user_message:
-                    llm_messages[-1] = LLMMessage(
-                        role="user", content=enriched_query
-                    )
-            except Exception as e:
-                logger.warning(f"RAG enrichment failed, using original query: {e}")
+        llm_messages = chat_context_service.build_messages_with_context(
+            messages_dict, context
+        )
 
         result = await llm_adapter.complete(
             llm_messages,
@@ -108,10 +109,14 @@ async def chat_completion_stream(request: ChatCompletionRequest):
 
     async def generate_stream():
         try:
-            llm_messages = [
-                LLMMessage(role=msg.role, content=msg.content)
-                for msg in request.messages
-            ]
+            messages_dict = [{"role": m.role, "content": m.content} for m in request.messages]
+            context = chat_context_service.analyze_context(messages_dict)
+            llm_messages = chat_context_service.build_messages_with_context(
+                messages_dict, context
+            )
+
+            if context.is_optimization_request:
+                logger.info("Detected optimization request - using optimizer prompt")
 
             async for chunk in llm_adapter.complete_stream(
                 llm_messages,

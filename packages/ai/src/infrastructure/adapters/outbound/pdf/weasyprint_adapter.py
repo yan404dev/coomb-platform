@@ -56,22 +56,24 @@ class WeasyPrintAdapter(PDFRendererPort):
 
     async def render_pdf(self, request: PDFRenderRequest) -> PDFRenderResult:
         template_id = request.template_id or "default"
+        language = request.language or "pt"
         template_config = AVAILABLE_TEMPLATES.get(template_id)
 
         if not template_config:
             template_id = "default"
             template_config = AVAILABLE_TEMPLATES["default"]
 
-        html_content = self._render_html(request.resume, template_id, template_config)
+        template_path = f"{template_id}/{language}"
+        html_content = self._render_html(request.resume, template_path, template_config)
         filename = self._build_filename(request.resume)
         filepath = self._storage_dir / filename
 
-        css_path = self._templates_dir / template_id / template_config.styles_file
+        css_path = self._templates_dir / template_id / language / template_config.styles_file
         css = CSS(filename=str(css_path)) if css_path.exists() else None
 
         html_doc = HTML(
             string=html_content,
-            base_url=str(self._templates_dir / template_id),
+            base_url=str(self._templates_dir / template_id / language),
         )
 
         if css:
@@ -79,12 +81,12 @@ class WeasyPrintAdapter(PDFRendererPort):
         else:
             html_doc.write_pdf(str(filepath))
 
-        logger.info(f"PDF generated: {filepath}")
+        logger.info(f"PDF generated: {filepath} (language: {language})")
 
         return PDFRenderResult(
             filename=filename,
             filepath=str(filepath),
-            template_used=template_id,
+            template_used=f"{template_id}/{language}",
         )
 
     def get_available_templates(self) -> list[TemplateInfo]:
@@ -93,8 +95,8 @@ class WeasyPrintAdapter(PDFRendererPort):
             for c in AVAILABLE_TEMPLATES.values()
         ]
 
-    def _render_html(self, resume: Any, template_id: str, config: TemplateConfig) -> str:
-        template = self._jinja_env.get_template(f"{template_id}/{config.template_file}")
+    def _render_html(self, resume: Any, template_path: str, config: TemplateConfig) -> str:
+        template = self._jinja_env.get_template(f"{template_path}/{config.template_file}")
         context = self._prepare_template_context(resume)
         return template.render(**context)
 

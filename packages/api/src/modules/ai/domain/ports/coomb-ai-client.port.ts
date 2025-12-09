@@ -46,6 +46,7 @@ export interface ChatCompletionResult {
   content: string;
   model: string;
   tokens_used: number;
+  pdf_url?: string;
 }
 
 export interface ChatStreamChunk {

@@ -99,6 +99,9 @@ class OpenAIAdapter(LLMProviderPort):
     def is_configured(self) -> bool:
         return bool(self._api_key)
 
+    def get_model_name(self) -> str:
+        return self._model
+
     def _convert_messages(self, messages: list[LLMMessage]) -> list:
         result = []
         for msg in messages:

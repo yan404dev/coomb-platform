@@ -100,6 +100,8 @@ export function FileAttachmentCard({
         <a
           href={downloadUrl}
           download
+          target="_blank"
+          rel="noopener noreferrer"
           className={`${baseClassName} ${interactiveClassName}`}
           onClick={handleDownloadClick}
         >

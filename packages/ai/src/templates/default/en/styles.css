@@ -1,0 +1,217 @@
+@page {
+  size: A4;
+  margin: 2cm;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Arial", "Helvetica", sans-serif;
+  font-size: 11pt;
+  line-height: 1.5;
+  color: #000000;
+  background: #ffffff;
+}
+
+.resume-container {
+  max-width: 100%;
+}
+
+.resume-header {
+  text-align: center;
+  margin-bottom: 20pt;
+  padding-bottom: 12pt;
+  border-bottom: 1pt solid #000000;
+}
+
+.candidate-name {
+  font-size: 22pt;
+  font-weight: bold;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 1pt;
+  margin-bottom: 10pt;
+}
+
+.contact-line {
+  font-size: 10pt;
+  color: #000000;
+  line-height: 1.8;
+  text-align: left;
+}
+
+.contact-link {
+  color: #0066cc;
+  text-decoration: underline;
+}
+
+.section {
+  margin-bottom: 16pt;
+  page-break-inside: avoid;
+}
+
+.section-title {
+  font-size: 12pt;
+  font-weight: bold;
+  color: #000000;
+  text-transform: uppercase;
+  letter-spacing: 0.5pt;
+  border-bottom: 1pt solid #000000;
+  padding-bottom: 3pt;
+  margin-bottom: 10pt;
+}
+
+.section-content {
+  padding-left: 0;
+}
+
+.entry {
+  margin-bottom: 12pt;
+  page-break-inside: avoid;
+}
+
+.entry:last-child {
+  margin-bottom: 0;
+}
+
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 4pt;
+}
+
+.entry-left {
+  flex: 1;
+}
+
+.entry-right {
+  text-align: right;
+  flex-shrink: 0;
+  margin-left: 20pt;
+}
+
+.entry-company {
+  font-size: 11pt;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 2pt;
+}
+
+.entry-position {
+  font-size: 10pt;
+  font-style: italic;
+  color: #000000;
+  margin-bottom: 2pt;
+}
+
+.entry-location {
+  font-size: 10pt;
+  font-weight: bold;
+  color: #000000;
+  margin-bottom: 2pt;
+}
+
+.entry-date {
+  font-size: 10pt;
+  font-style: italic;
+  color: #000000;
+}
+
+.entry-subtitle {
+  font-size: 10pt;
+  color: #000000;
+  margin-bottom: 4pt;
+}
+
+.entry-description {
+  font-size: 10pt;
+  color: #000000;
+  margin-bottom: 4pt;
+  text-align: justify;
+}
+
+.entry-list {
+  list-style-position: outside;
+  padding-left: 18pt;
+  margin-top: 4pt;
+}
+
+.entry-list li {
+  font-size: 10pt;
+  color: #000000;
+  margin-bottom: 3pt;
+  line-height: 1.4;
+}
+
+.skills-content {
+  font-size: 10pt;
+  color: #000000;
+  line-height: 1.6;
+}
+
+.skill-category {
+  margin-bottom: 6pt;
+}
+
+.skill-category:last-child {
+  margin-bottom: 0;
+}
+
+.skill-category strong {
+  font-weight: bold;
+  color: #000000;
+}
+
+.skills-text {
+  font-size: 10pt;
+  color: #000000;
+  line-height: 1.5;
+}
+
+.languages-text {
+  font-size: 10pt;
+  color: #000000;
+  line-height: 1.5;
+}
+
+.languages-text strong {
+  font-weight: bold;
+  color: #000000;
+}
+
+.certifications-list {
+  list-style-position: outside;
+  padding-left: 18pt;
+}
+
+.certifications-list li {
+  font-size: 10pt;
+  color: #000000;
+  margin-bottom: 3pt;
+  line-height: 1.4;
+}
+
+@media print {
+  body {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .section {
+    page-break-inside: avoid;
+  }
+
+  .entry {
+    page-break-inside: avoid;
+  }
+
+  .contact-link {
+    color: #0066cc;
+  }
+}
+

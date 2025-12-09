@@ -40,12 +40,14 @@ class PDFRenderRequest:
 
     Attributes:
         resume: Resume data (dict or entity)
-        template_id: Template to use (default: "modern")
+        template_id: Template to use (default: "default")
+        language: Language code ("pt" or "en", default: "pt")
         options: Additional render options
     """
 
     resume: Any  # Can be dict or Resume entity
-    template_id: str = "modern"
+    template_id: str = "default"
+    language: str = "pt"
     options: Optional[PDFRenderOptions] = None
 
 

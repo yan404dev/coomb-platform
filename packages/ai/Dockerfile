@@ -32,8 +32,14 @@ WORKDIR /app
 RUN apt-get update && apt-get install -y --no-install-recommends \
     libpango-1.0-0 \
     libpangocairo-1.0-0 \
-    libgdk-pixbuf2.0-0 \
+    libpangoft2-1.0-0 \
+    libgdk-pixbuf-2.0-0 \
+    libcairo2 \
+    libharfbuzz0b \
     libffi-dev \
+    libfontconfig1 \
+    fonts-liberation \
+    fonts-dejavu-core \
     shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
@@ -46,8 +52,6 @@ RUN groupadd -r coomb && useradd -r -g coomb coomb
 
 # Copy application code
 COPY --chown=coomb:coomb src/ ./src/
-COPY --chown=coomb:coomb prompts/ ./prompts/
-COPY --chown=coomb:coomb templates/ ./templates/
 
 # Create storage directory
 RUN mkdir -p /app/storage && chown coomb:coomb /app/storage
@@ -58,6 +62,7 @@ USER coomb
 # Environment variables
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONPATH=/app/src \
     APP_ENV=production \
     DEBUG=false
 

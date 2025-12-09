@@ -23,6 +23,7 @@ services:
       - VECTOR_STORE_PROVIDER=qdrant
       - STORAGE_PROVIDER=local
       - LOCAL_STORAGE_PATH=/app/storage
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     env_file:
       - .env
     volumes:

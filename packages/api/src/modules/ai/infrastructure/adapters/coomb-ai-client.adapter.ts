@@ -211,14 +211,70 @@ export class CoombAIClientAdapter implements CoombAIClientPort {
   }
 
   async chatStream(
-    _messages: ChatMessage[],
+    messages: ChatMessage[],
     _userId?: string | null,
-    _temperature: number = 0.7,
-    _maxTokens: number = 2000
+    temperature: number = 0.7,
+    maxTokens: number = 2000
   ): Promise<Observable<ChatStreamChunk>> {
+    const request = {
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+      temperature,
+      max_tokens: maxTokens,
+    };
+
     return new Observable((observer) => {
-      observer.error(new Error("chatStream não implementado ainda"));
-      observer.complete();
+      const fetchStream = async () => {
+        try {
+          const response = await fetch(
+            `${this.baseUrl}/api/v1/chat/completion/stream`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(request),
+            }
+          );
+
+          if (!response.ok) {
+            throw new Error(`HTTP error: ${response.status}`);
+          }
+
+          const reader = response.body?.getReader();
+          if (!reader) {
+            throw new Error("No response body");
+          }
+
+          const decoder = new TextDecoder();
+          let buffer = "";
+
+          while (true) {
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            buffer += decoder.decode(value, { stream: true });
+            const lines = buffer.split("\n");
+            buffer = lines.pop() || "";
+
+            for (const line of lines) {
+              if (line.startsWith("data: ")) {
+                const data = line.slice(6).trim();
+                if (data === "[DONE]") {
+                  observer.next({ content: "", is_complete: true });
+                  observer.complete();
+                  return;
+                }
+                observer.next({ content: data, is_complete: false });
+              }
+            }
+          }
+
+          observer.next({ content: "", is_complete: true });
+          observer.complete();
+        } catch (error) {
+          observer.error(error);
+        }
+      };
+
+      fetchStream();
     });
   }
 

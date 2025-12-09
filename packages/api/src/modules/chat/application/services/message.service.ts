@@ -96,10 +96,14 @@ export class MessageService {
     }
 
     const messages = await this.messageRepository.findByChatId(result.chatId);
-    const chatMessages: ChatMessage[] = messages.map((msg: Message) => ({
-      role: msg.messageType === MessageType.USER ? "user" : "assistant",
-      content: msg.content,
-    }));
+    const chatMessages: ChatMessage[] = messages.map(
+      (msg: Message): ChatMessage => ({
+        role: (msg.messageType === MessageType.USER ? "user" : "assistant") as
+          | "user"
+          | "assistant",
+        content: msg.content,
+      })
+    );
 
     let fullContent = "";
 
@@ -192,7 +196,11 @@ export class MessageService {
       pdf_url: undefined,
     });
 
-    await this.processAssistantResponse(currentChatId, userId);
+    await this.processAssistantResponse(
+      currentChatId,
+      userId,
+      extractedResumeData?.raw_text
+    );
     await this.updateChatMetadata(currentChatId);
 
     return { chatId: currentChatId, data: extractedResumeData };
@@ -212,26 +220,37 @@ export class MessageService {
 
   private async processAssistantResponse(
     chatId: string,
-    userId: string | null
+    userId: string | null,
+    _resumeContext?: string
   ): Promise<void> {
     if (!this.coombAI) return;
 
     const messages = await this.messageRepository.findByChatId(chatId);
-    const chatMessages: ChatMessage[] = messages.map((msg: Message) => ({
-      role: msg.messageType === MessageType.USER ? "user" : "assistant",
-      content: msg.content,
-    }));
+    // O conteúdo do currículo já está incluído na própria mensagem (salvo no banco)
+    // não precisa mais adicionar dinamicamente
+    const chatMessages: ChatMessage[] = messages.map(
+      (msg: Message): ChatMessage => ({
+        role: (msg.messageType === MessageType.USER
+          ? "user"
+          : "assistant") as "user" | "assistant",
+        content: msg.content,
+      })
+    );
 
     const assistantResponse = await this.coombAI.chatCompletion(
       chatMessages,
       userId
     );
 
+    const pdfUrl = assistantResponse.pdf_url
+      ? `${process.env.COOMB_AI_URL || "http://localhost:8000"}${assistantResponse.pdf_url}`
+      : undefined;
+
     await this.messageRepository.create({
       chat_id: chatId,
       content: assistantResponse.content,
       messageType: MessageType.ASSISTANT,
-      pdf_url: undefined,
+      pdf_url: pdfUrl,
     });
 
     await this.updateChatMetadata(chatId);
@@ -261,6 +280,8 @@ export class MessageService {
         fileName
       );
       extractedResumeData = { raw_text: extractedText };
+      // Inclui o conteúdo do currículo NA PRÓPRIA MENSAGEM para que fique salvo no banco
+      // Isso garante que quando a vaga for enviada depois, o currículo ainda estará disponível
       messageContent = `Arquivo anexado: ${fileName}\n\n=== CONTEÚDO DO CURRÍCULO ===\n${extractedText}`;
     } catch (error) {
       this.logger.error("Erro ao processar arquivo:", error);
