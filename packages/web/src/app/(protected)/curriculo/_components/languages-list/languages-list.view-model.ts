@@ -1,18 +1,20 @@
-"use client";
-
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Language } from "@/shared/types";
-import { deleteLanguageAction, updateLanguageAction } from "../../_actions/resume.actions";
+import type { Resume, Language } from "@/shared/types";
+import {
+  deleteLanguageAction,
+  updateLanguageAction,
+} from "../../_actions/resume.actions";
 
-export function useLanguagesListModel() {
+export function useLanguagesListViewModel(resume: Resume | null) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(
-    null
-  );
+  const [selectedLanguage, setSelectedLanguage] = useState<Language | null>(null);
+
+  const languages = useMemo(() => resume?.languages ?? [], [resume?.languages]);
+  const isEmpty = useMemo(() => languages.length === 0, [languages]);
 
   const openCreateModal = useCallback(() => {
     setSelectedLanguage(null);
@@ -41,7 +43,7 @@ export function useLanguagesListModel() {
   );
 
   const removeLanguage = useCallback(
-    async (languageId: string) => {
+    (languageId: string) => {
       startTransition(async () => {
         try {
           await deleteLanguageAction(languageId);
@@ -57,7 +59,7 @@ export function useLanguagesListModel() {
   );
 
   const updateLanguageLevel = useCallback(
-    async (languageId: string, level: Language["level"]) => {
+    (languageId: string, level: Language["level"]) => {
       startTransition(async () => {
         try {
           await updateLanguageAction(languageId, {
@@ -65,7 +67,8 @@ export function useLanguagesListModel() {
           });
           router.refresh();
         } catch (error: any) {
-          const errorMessage = error?.message || "Erro ao atualizar nível do idioma";
+          const errorMessage =
+            error?.message || "Erro ao atualizar nível do idioma";
           toast.error(errorMessage);
         }
       });
@@ -74,6 +77,8 @@ export function useLanguagesListModel() {
   );
 
   return {
+    languages,
+    isEmpty,
     isPending,
     isModalOpen,
     selectedLanguage,

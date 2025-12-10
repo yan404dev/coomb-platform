@@ -1,9 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useResume } from "../../_hooks/use-resume";
-import { resumeService } from "../../_services/resume.service";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  addExperienceAction,
+  updateExperienceAction,
+} from "../../_actions/resume.actions";
 import {
   experienceSchema,
   type ExperienceRequest,
@@ -22,7 +25,8 @@ export const useExperienceModalModel = ({
   onSuccess,
   open,
 }: UseExperienceModalModelProps) => {
-  const { mutate } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<ExperienceRequest>({
     resolver: zodResolver(experienceSchema),
@@ -55,50 +59,52 @@ export const useExperienceModalModel = ({
     async (data: ExperienceRequest) => {
       const isEditing = !!experienceId;
 
-      try {
-        if (isEditing && experienceId) {
-          await resumeService.updateExperience(experienceId, {
-            position: data.position,
-            company: data.company,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            current: data.current,
-            description: data.description ?? undefined,
-          });
-        } else {
-          await resumeService.addExperience({
-            position: data.position,
-            company: data.company,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            current: data.current,
-            description: data.description ?? undefined,
-          });
+      startTransition(async () => {
+        try {
+          if (isEditing && experienceId) {
+            await updateExperienceAction(experienceId, {
+              position: data.position,
+              company: data.company,
+              startDate: data.startDate,
+              endDate: data.endDate,
+              current: data.current,
+              description: data.description ?? undefined,
+            });
+          } else {
+            await addExperienceAction({
+              position: data.position,
+              company: data.company,
+              startDate: data.startDate,
+              endDate: data.endDate,
+              current: data.current,
+              description: data.description ?? undefined,
+            });
+          }
+
+          toast.success(
+            isEditing
+              ? "Experiência atualizada com sucesso"
+              : "Experiência adicionada com sucesso"
+          );
+
+          router.refresh();
+          onSuccess?.();
+        } catch (error: any) {
+          const errorMessage =
+            error?.message ||
+            (isEditing
+              ? "Erro ao atualizar experiência"
+              : "Erro ao adicionar experiência");
+          toast.error(errorMessage);
         }
-
-        await mutate();
-
-        toast.success(
-          isEditing
-            ? "Experiência atualizada com sucesso"
-            : "Experiência adicionada com sucesso"
-        );
-
-        onSuccess?.();
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.message ||
-          (isEditing
-            ? "Erro ao atualizar experiência"
-            : "Erro ao adicionar experiência");
-        toast.error(errorMessage);
-      }
+      });
     },
-    [experienceId, mutate, onSuccess]
+    [experienceId, router, onSuccess]
   );
 
   return {
     form,
     submitExperience,
+    isPending,
   };
 };

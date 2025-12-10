@@ -14,8 +14,8 @@ import { SkillsList } from "../skills-list";
 import { LanguagesList } from "../languages-list";
 import { getResumeCompletionStats } from "@/shared/utils/resume-completion";
 import { ImportCurriculumCard } from "./import-curriculum-card";
-import { useResume } from "../../_hooks/use-resume";
 import { useTabNavigation } from "@/app/(protected)/curriculo/_hooks/use-tab-navigation";
+import type { Resume } from "@/shared/types";
 
 interface CurriculumContainerProps {
   navigationItems: NavigationItem[];
@@ -26,15 +26,16 @@ interface CurriculumContainerProps {
     maxSize: string;
     instructions: string;
   };
+  resume: Resume | null;
 }
 
 export function CurriculumContainer({
   navigationItems,
   photoUploadData,
+  resume,
 }: CurriculumContainerProps) {
   const { currentTab, setCurrentTab } = useTabNavigation();
-  const { data } = useResume();
-  const completion = useMemo(() => getResumeCompletionStats(data), [data]);
+  const completion = useMemo(() => getResumeCompletionStats(resume), [resume]);
   const { percentage } = completion;
 
   const progressData = useMemo(
@@ -73,16 +74,16 @@ export function CurriculumContainer({
             </>
           )}
 
-          {currentTab === CurriculumSection.EXPERIENCES && <ExperiencesForm />}
+          {currentTab === CurriculumSection.EXPERIENCES && <ExperiencesForm resume={resume} />}
 
           {currentTab === CurriculumSection.SKILLS && (
             <div className="space-y-6">
-              <SkillsList />
-              <LanguagesList />
+              <SkillsList resume={resume} />
+              <LanguagesList resume={resume} />
             </div>
           )}
 
-          {currentTab === CurriculumSection.OTHER && <OutrasInfoTab />}
+          {currentTab === CurriculumSection.OTHER && <OutrasInfoTab resume={resume} />}
         </main>
       </div>
     </div>

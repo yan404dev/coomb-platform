@@ -5,17 +5,15 @@ import Link from "next/link";
 import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import { Skeleton } from "@/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
 import type { Resume } from "@/shared/types";
 import { useProfileSkillsSectionModel } from "./profile-skills-section.model";
 
 interface ProfileSkillsSectionProps {
   resume?: Resume | null;
-  loading?: boolean;
 }
 
-export const ProfileSkillsSection = ({ resume, loading }: ProfileSkillsSectionProps) => {
+export const ProfileSkillsSection = ({ resume }: ProfileSkillsSectionProps) => {
   const {
     isSkillsExpanded,
     setIsSkillsExpanded,
@@ -34,22 +32,6 @@ export const ProfileSkillsSection = ({ resume, loading }: ProfileSkillsSectionPr
 
   const visibleSkills = isSkillsExpanded ? skills : skills.slice(0, INITIAL_VISIBLE_SKILLS);
   const visibleLanguages = isLanguagesExpanded ? languages : languages.slice(0, INITIAL_VISIBLE_LANGUAGES);
-
-  if (loading) {
-    return (
-      <Card className="w-full p-3 md:p-4 xl:p-6 flex flex-col gap-4 md:gap-6">
-        <Skeleton className="h-7 w-40" />
-        <div className="space-y-4">
-          <Skeleton className="h-6 w-48" />
-          <div className="flex gap-2">
-            <Skeleton className="h-8 w-20 rounded-full" />
-            <Skeleton className="h-8 w-24 rounded-full" />
-            <Skeleton className="h-8 w-20 rounded-full" />
-          </div>
-        </div>
-      </Card>
-    );
-  }
 
   if (skills.length === 0 && languages.length === 0) {
     return (

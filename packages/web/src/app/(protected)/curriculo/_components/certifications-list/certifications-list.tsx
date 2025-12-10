@@ -1,13 +1,17 @@
 "use client";
 
+import type { Resume } from "@/shared/types";
 import { AddItemButton } from "@/components/add-item-button";
 import { CertificationCard } from "../certification-card";
 import { CertificationModal } from "../certification-modal";
 import { FormSection } from "@/components/form";
-import { useResume } from "../../_hooks/use-resume";
 import { useCertificationsListModel } from "./certifications-list.model";
 
-export function CertificationsList() {
+interface CertificationsListProps {
+  resume: Resume | null;
+}
+
+export function CertificationsList({ resume }: CertificationsListProps) {
   const {
     isModalOpen,
     editingCertificationId,
@@ -15,7 +19,6 @@ export function CertificationsList() {
     handleAdd,
     handleCloseModal,
   } = useCertificationsListModel();
-  const { data: resume } = useResume();
 
   return (
     <>
@@ -24,7 +27,7 @@ export function CertificationsList() {
         title="Seus cursos profissionalizantes e certificações"
       >
         <div className="space-y-6">
-          <CertificationCard onEdit={handleEdit} />
+          <CertificationCard certifications={resume?.certifications ?? []} onEdit={handleEdit} />
           <AddItemButton label="Adicionar certificação" onClick={handleAdd} />
         </div>
       </FormSection>

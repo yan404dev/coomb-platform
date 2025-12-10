@@ -7,31 +7,16 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
 import type { Resume } from "@/shared/types";
 
 interface ProfileAboutSectionProps {
   resume?: Resume | null;
-  loading?: boolean;
 }
 
-export const ProfileAboutSection = ({ resume, loading }: ProfileAboutSectionProps) => {
+export const ProfileAboutSection = ({ resume }: ProfileAboutSectionProps) => {
   const professionalSummary = resume?.user?.professional_summary || "";
   const careerGoals = resume?.user?.career_goals || "";
-
-  if (loading) {
-    return (
-      <Card className="w-full p-3 md:p-4 xl:p-6 flex flex-col gap-4 md:gap-6">
-        <Skeleton className="h-7 w-32" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-3/4" />
-        </div>
-      </Card>
-    );
-  }
 
   if (!professionalSummary && !careerGoals) {
     return (

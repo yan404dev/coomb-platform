@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useResume } from "../../_hooks/use-resume";
 import { type SkillRequest, skillSchema } from "./skill-modal.schema";
-import { resumeService } from "../../_services/resume.service";
+import { addSkillAction, updateSkillAction } from "../../_actions/resume.actions";
 
 interface UseSkillModalModelOptions {
   defaultValues?: Partial<SkillRequest> | null;
@@ -20,7 +20,8 @@ const EMPTY_SKILL: SkillRequest = {
 
 export function useSkillModalModel(options: UseSkillModalModelOptions = {}) {
   const { defaultValues, skillId, onSuccess } = options;
-  const { mutate } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<SkillRequest>({
     resolver: zodResolver(skillSchema) as any,
@@ -38,33 +39,35 @@ export function useSkillModalModel(options: UseSkillModalModelOptions = {}) {
   async function submitSkill(data: SkillRequest) {
     const isEditing = !!skillId;
 
-    try {
-      if (isEditing && skillId) {
-        await resumeService.updateSkill(skillId, {
-          name: data.name,
-          level: data.level ?? undefined,
-        });
-        toast.success("Habilidade atualizada com sucesso");
-      } else {
-        await resumeService.addSkill({
-          name: data.name,
-          level: data.level ?? undefined,
-        });
-        toast.success("Habilidade adicionada com sucesso");
-      }
+    startTransition(async () => {
+      try {
+        if (isEditing && skillId) {
+          await updateSkillAction(skillId, {
+            name: data.name,
+            level: data.level ?? undefined,
+          });
+          toast.success("Habilidade atualizada com sucesso");
+        } else {
+          await addSkillAction({
+            name: data.name,
+            level: data.level ?? undefined,
+          });
+          toast.success("Habilidade adicionada com sucesso");
+        }
 
-      await mutate();
-      form.reset(EMPTY_SKILL);
-      onSuccess?.();
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || "Erro ao salvar habilidade";
-      toast.error(errorMessage);
-    }
+        form.reset(EMPTY_SKILL);
+        router.refresh();
+        onSuccess?.();
+      } catch (error: any) {
+        const errorMessage = error?.message || "Erro ao salvar habilidade";
+        toast.error(errorMessage);
+      }
+    });
   }
 
   return {
     form,
     submitSkill,
+    isPending,
   };
 }

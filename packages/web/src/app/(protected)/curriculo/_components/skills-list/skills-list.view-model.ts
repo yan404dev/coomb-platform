@@ -1,16 +1,20 @@
-"use client";
-
-import { useCallback, useState, useTransition } from "react";
+import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Skill } from "@/shared/types";
-import { deleteSkillAction, updateSkillAction } from "../../_actions/resume.actions";
+import type { Resume, Skill } from "@/shared/types";
+import {
+  deleteSkillAction,
+  updateSkillAction,
+} from "../../_actions/resume.actions";
 
-export function useSkillsListModel() {
+export function useSkillsListViewModel(resume: Resume | null) {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
+
+  const skills = useMemo(() => resume?.skills ?? [], [resume?.skills]);
+  const isEmpty = useMemo(() => skills.length === 0, [skills]);
 
   const openCreateModal = useCallback(() => {
     setSelectedSkill(null);
@@ -39,7 +43,7 @@ export function useSkillsListModel() {
   );
 
   const removeSkill = useCallback(
-    async (skillId: string) => {
+    (skillId: string) => {
       startTransition(async () => {
         try {
           await deleteSkillAction(skillId);
@@ -55,13 +59,14 @@ export function useSkillsListModel() {
   );
 
   const updateSkillLevel = useCallback(
-    async (skillId: string, level: Skill["level"]) => {
+    (skillId: string, level: Skill["level"]) => {
       startTransition(async () => {
         try {
           await updateSkillAction(skillId, { level: level ?? undefined });
           router.refresh();
         } catch (error: any) {
-          const errorMessage = error?.message || "Erro ao atualizar nível da habilidade";
+          const errorMessage =
+            error?.message || "Erro ao atualizar nível da habilidade";
           toast.error(errorMessage);
         }
       });
@@ -70,6 +75,8 @@ export function useSkillsListModel() {
   );
 
   return {
+    skills,
+    isEmpty,
     isPending,
     isModalOpen,
     selectedSkill,

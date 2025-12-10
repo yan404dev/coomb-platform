@@ -1,9 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useResume } from "../../_hooks/use-resume";
-import { resumeService } from "../../_services/resume.service";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  addEducationAction,
+  updateEducationAction,
+} from "../../_actions/resume.actions";
 import {
   educationSchema,
   type EducationRequest,
@@ -22,7 +25,8 @@ export const useEducationModalModel = ({
   onSuccess,
   open,
 }: UseEducationModalModelProps) => {
-  const { mutate } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<EducationRequest>({
     resolver: zodResolver(educationSchema),
@@ -53,48 +57,50 @@ export const useEducationModalModel = ({
     async (data: EducationRequest) => {
       const isEditing = !!educationId;
 
-      try {
-        if (isEditing && educationId) {
-          await resumeService.updateEducation(educationId, {
-            degree: data.degree,
-            institution: data.institution,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            current: data.current,
-          });
-        } else {
-          await resumeService.addEducation({
-            degree: data.degree,
-            institution: data.institution,
-            startDate: data.startDate,
-            endDate: data.endDate,
-            current: data.current,
-          });
+      startTransition(async () => {
+        try {
+          if (isEditing && educationId) {
+            await updateEducationAction(educationId, {
+              degree: data.degree,
+              institution: data.institution,
+              startDate: data.startDate,
+              endDate: data.endDate,
+              current: data.current,
+            });
+          } else {
+            await addEducationAction({
+              degree: data.degree,
+              institution: data.institution,
+              startDate: data.startDate,
+              endDate: data.endDate,
+              current: data.current,
+            });
+          }
+
+          toast.success(
+            isEditing
+              ? "Formação atualizada com sucesso"
+              : "Formação adicionada com sucesso"
+          );
+
+          router.refresh();
+          onSuccess?.();
+        } catch (error: any) {
+          const errorMessage =
+            error?.message ||
+            (isEditing
+              ? "Erro ao atualizar formação"
+              : "Erro ao adicionar formação");
+          toast.error(errorMessage);
         }
-
-        await mutate();
-
-        toast.success(
-          isEditing
-            ? "Formação atualizada com sucesso"
-            : "Formação adicionada com sucesso"
-        );
-
-        onSuccess?.();
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.message ||
-          (isEditing
-            ? "Erro ao atualizar formação"
-            : "Erro ao adicionar formação");
-        toast.error(errorMessage);
-      }
+      });
     },
-    [educationId, mutate, onSuccess]
+    [educationId, router, onSuccess]
   );
 
   return {
     form,
     submitEducation,
+    isPending,
   };
 };

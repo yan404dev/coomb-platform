@@ -1,26 +1,23 @@
 "use client";
 
-import { useCertificationCardModel } from "./certification-card.model";
+import type { Certification } from "@/shared/types";
+import { useCertificationCardViewModel } from "./certification-card.view-model";
 
 interface CertificationCardProps {
+  certifications: Certification[];
   onEdit?: (certificationId: string) => void;
 }
 
-export function CertificationCard({ onEdit }: CertificationCardProps) {
-  const { certifications, isLoading, deleteCertification } =
-    useCertificationCardModel();
+export function CertificationCard({ certifications, onEdit }: CertificationCardProps) {
+  const viewModel = useCertificationCardViewModel(certifications, onEdit);
 
-  if (isLoading) {
-    return <div>Carregando certificações...</div>;
-  }
-
-  if (certifications.length === 0) {
+  if (viewModel.isEmpty) {
     return null;
   }
 
   return (
     <div className="space-y-6">
-      {certifications.map((certification) => (
+      {viewModel.certificationsData.map((certification) => (
         <div key={certification.id} className="space-y-4">
           <div className="border border-border rounded-lg p-6 space-y-3">
             <div>
@@ -45,14 +42,14 @@ export function CertificationCard({ onEdit }: CertificationCardProps) {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => onEdit?.(certification.id)}
+              onClick={() => viewModel.handleEdit(certification.id)}
               className="text-[#028A5A] font-semibold text-sm hover:underline"
             >
               Editar
             </button>
             <button
               type="button"
-              onClick={() => void deleteCertification(certification.id)}
+              onClick={() => viewModel.deleteCertification(certification.id)}
               className="text-[#028A5A] font-semibold text-sm hover:underline"
             >
               Remover

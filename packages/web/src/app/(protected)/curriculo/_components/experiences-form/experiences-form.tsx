@@ -1,4 +1,5 @@
 "use client";
+import type { Resume } from "@/shared/types";
 import { AddItemButton } from "@/components/add-item-button";
 import { ImportCurriculumCard } from "../curriculum/import-curriculum-card";
 import { ExperienceCard } from "../experience-card";
@@ -9,50 +10,23 @@ import { FormSaveFooter, FormSection } from "@/components/form";
 import { InfoBox } from "@/components/info-box";
 import { Form } from "@/components/ui/form";
 import { TextareaField } from "@/components/ui/textarea-field";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useExperiencesModel } from "./experiences.model";
 
 interface ExperiencesFormProps {
+  resume: Resume | null;
   onContinue?: () => void;
 }
 
-export function ExperiencesForm({ onContinue }: ExperiencesFormProps) {
+export function ExperiencesForm({ resume, onContinue }: ExperiencesFormProps) {
   const {
     form,
-    loading,
     onSubmit,
-    data,
     isModalOpen,
     editingExperienceId,
     handleEdit,
     handleCloseModal,
     handleOpenModal,
-  } = useExperiencesModel(onContinue);
-
-  if (loading) {
-    return (
-      <div className="space-y-6 pb-24">
-        <ImportCurriculumCard />
-
-        <FormSection
-          id="resumo-profissional"
-          title="Resumo profissional"
-          defaultOpen
-        >
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-32 w-full" />
-          <Skeleton className="h-16 w-full" />
-        </FormSection>
-
-        <FormSection id="experiencias" title="Quais são suas experiências" defaultOpen>
-          <Skeleton className="h-24 w-full" />
-          <Skeleton className="h-10 w-40" />
-        </FormSection>
-
-        <FormSaveFooter rightContent={<Skeleton className="h-10 w-40" />} />
-      </div>
-    );
-  }
+  } = useExperiencesModel(resume, onContinue);
 
   return (
     <Form {...form}>
@@ -91,7 +65,7 @@ export function ExperiencesForm({ onContinue }: ExperiencesFormProps) {
             title="Quais são suas experiências"
             defaultOpen
           >
-            <ExperienceCard onEdit={handleEdit} />
+            <ExperienceCard experiences={resume?.experiences ?? []} onEdit={handleEdit} />
 
             <AddItemButton
               label="Adicionar experiência"
@@ -99,9 +73,9 @@ export function ExperiencesForm({ onContinue }: ExperiencesFormProps) {
             />
           </FormSection>
 
-          <EducationsList />
+          <EducationsList resume={resume} />
 
-          <CertificationsList />
+          <CertificationsList resume={resume} />
         </div>
 
         <FormSaveFooter
@@ -119,8 +93,8 @@ export function ExperiencesForm({ onContinue }: ExperiencesFormProps) {
           onOpenChange={handleCloseModal}
           experienceId={editingExperienceId}
           defaultValues={
-            editingExperienceId && data?.experiences
-              ? data.experiences.find((exp) => exp.id === editingExperienceId)
+            editingExperienceId && resume?.experiences
+              ? resume.experiences.find((exp) => exp.id === editingExperienceId)
               : undefined
           }
         />

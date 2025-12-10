@@ -1,12 +1,12 @@
 "use client";
 
 import type { ChangeEvent } from "react";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useRef, useState, useTransition } from "react";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { userService } from "@/shared/services/user.service";
 import { aiService } from "@/app/dashboard/_services/ai.service";
-import { resumeService } from "../../_services/resume.service";
-import { useResume } from "../../_hooks/use-resume";
+import { updateResumeAction } from "../../_actions/resume.actions";
 import { useUser } from "@/shared/hooks/use-user";
 import type {
   Experience,
@@ -111,7 +111,8 @@ const validateFile = (file: File) => {
 export function useImportCurriculumCard() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [isImporting, setIsImporting] = useState(false);
-  const { data: resume, mutate: mutateResume } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
   const { user, mutate: mutateUser } = useUser();
 
   const resetInput = () => {
@@ -142,12 +143,6 @@ export function useImportCurriculumCard() {
         return;
       }
 
-      if (!resume) {
-        toast.error("Currículo não encontrado.");
-        resetInput();
-        return;
-      }
-
       try {
         setIsImporting(true);
         toast.info("Importando currículo com IA...");
@@ -164,30 +159,34 @@ export function useImportCurriculumCard() {
           professional_summary: sanitizeString(data.professional_summary),
         });
 
-        await resumeService.update({
-          experiences: normalizeExperiences(data.experiences),
-          skills: normalizeSkills(data.skills),
-          languages: normalizeLanguages(data.languages),
-          educations: normalizeEducations(data.educations),
-          certifications: normalizeCertifications(data.certifications),
+        startTransition(async () => {
+          await updateResumeAction({
+            experiences: normalizeExperiences(data.experiences),
+            skills: normalizeSkills(data.skills),
+            languages: normalizeLanguages(data.languages),
+            educations: normalizeEducations(data.educations),
+            certifications: normalizeCertifications(data.certifications),
+          });
+
+          await mutateUser();
+          router.refresh();
+
+          toast.success("Currículo importado com sucesso!");
+          setIsImporting(false);
+          resetInput();
         });
-
-        await Promise.all([mutateResume(), mutateUser()]);
-
-        toast.success("Currículo importado com sucesso!");
       } catch (error) {
         toast.error("Erro ao importar currículo. Tente novamente.");
-      } finally {
         setIsImporting(false);
         resetInput();
       }
     },
-    [resume, mutateResume, user, mutateUser]
+    [user, mutateUser, router]
   );
 
   return {
     fileInputRef,
-    isImporting,
+    isImporting: isImporting || isPending,
     onFileChange,
   };
 }

@@ -1,5 +1,6 @@
 "use client";
 
+import type { Resume } from "@/shared/types";
 import { Controller } from "react-hook-form";
 import {
   FormField,
@@ -10,7 +11,11 @@ import {
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { useOutrasInfoModel } from "./outras-info.model";
 
-export function OutrasInfoTab() {
+interface OutrasInfoTabProps {
+  resume: Resume | null;
+}
+
+export function OutrasInfoTab({ resume }: OutrasInfoTabProps) {
   const { form, loading, error, onSubmit, clearCnhFields } =
     useOutrasInfoModel();
 

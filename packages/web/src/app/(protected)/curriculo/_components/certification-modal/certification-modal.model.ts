@@ -1,9 +1,12 @@
-import { useCallback, useEffect } from "react";
+import { useCallback, useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useResume } from "../../_hooks/use-resume";
-import { resumeService } from "../../_services/resume.service";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import {
+  addCertificationAction,
+  updateCertificationAction,
+} from "../../_actions/resume.actions";
 import {
   certificationSchema,
   type CertificationRequest,
@@ -22,7 +25,8 @@ export const useCertificationModalModel = ({
   onSuccess,
   open,
 }: UseCertificationModalModelProps) => {
-  const { mutate } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<CertificationRequest>({
     resolver: zodResolver(certificationSchema),
@@ -49,44 +53,46 @@ export const useCertificationModalModel = ({
     async (data: CertificationRequest) => {
       const isEditing = !!certificationId;
 
-      try {
-        if (isEditing && certificationId) {
-          await resumeService.updateCertification(certificationId, {
-            name: data.name,
-            institution: data.institution,
-            completionDate: data.completionDate,
-          });
-        } else {
-          await resumeService.addCertification({
-            name: data.name,
-            institution: data.institution,
-            completionDate: data.completionDate,
-          });
+      startTransition(async () => {
+        try {
+          if (isEditing && certificationId) {
+            await updateCertificationAction(certificationId, {
+              name: data.name,
+              institution: data.institution,
+              completionDate: data.completionDate,
+            });
+          } else {
+            await addCertificationAction({
+              name: data.name,
+              institution: data.institution,
+              completionDate: data.completionDate,
+            });
+          }
+
+          toast.success(
+            isEditing
+              ? "Certificação atualizada com sucesso"
+              : "Certificação adicionada com sucesso"
+          );
+
+          router.refresh();
+          onSuccess?.();
+        } catch (error: any) {
+          const errorMessage =
+            error?.message ||
+            (isEditing
+              ? "Erro ao atualizar certificação"
+              : "Erro ao adicionar certificação");
+          toast.error(errorMessage);
         }
-
-        await mutate();
-
-        toast.success(
-          isEditing
-            ? "Certificação atualizada com sucesso"
-            : "Certificação adicionada com sucesso"
-        );
-
-        onSuccess?.();
-      } catch (error: any) {
-        const errorMessage =
-          error?.response?.data?.message ||
-          (isEditing
-            ? "Erro ao atualizar certificação"
-            : "Erro ao adicionar certificação");
-        toast.error(errorMessage);
-      }
+      });
     },
-    [certificationId, mutate, onSuccess]
+    [certificationId, router, onSuccess]
   );
 
   return {
     form,
     submitCertification,
+    isPending,
   };
 };

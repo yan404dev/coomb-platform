@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
-import { useResume } from "@/app/(protected)/curriculo/_hooks/use-resume";
+import { useRouter } from "next/navigation";
 import { aiService } from "@/app/dashboard/_services/ai.service";
 import type { Resume } from "@/shared/types";
 
@@ -13,16 +13,14 @@ const PERSONALITY_CONFIG = [
 
 interface UseProfileSidebarModelProps {
   resume?: Resume | null;
-  loading?: boolean;
 }
 
 export function useProfileSidebarModel({
   resume,
-  loading,
 }: UseProfileSidebarModelProps) {
   const [generating, setGenerating] = useState(false);
   const hasGeneratedRef = useRef(false);
-  const { mutate } = useResume();
+  const router = useRouter();
   const personality = resume?.user?.personality_profile;
 
   const generatePersonality = useCallback(async () => {
@@ -31,20 +29,20 @@ export function useProfileSidebarModel({
       toast.info("Gerando seu perfil de personalidade com IA...");
       await aiService.generatePersonality();
       toast.success("Perfil de personalidade gerado!");
-      await mutate();
-    } catch (error) {
+      router.refresh();
+    } catch {
       toast.error("Erro ao gerar perfil.");
     } finally {
       setGenerating(false);
     }
-  }, [mutate]);
+  }, [router]);
 
   useEffect(() => {
-    if (!loading && resume && !personality && !hasGeneratedRef.current) {
+    if (resume && !personality && !hasGeneratedRef.current) {
       hasGeneratedRef.current = true;
       generatePersonality();
     }
-  }, [loading, resume, personality, generatePersonality]);
+  }, [resume, personality, generatePersonality]);
 
   const getDominantProfile = () => {
     if (!personality) return null;

@@ -1,18 +1,24 @@
-"use client";
-
+import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 import { Header } from "@/components";
 import { ProfileAboutSection } from "./_components/profile-about-section";
 import { ProfileHeader } from "./_components/profile-header";
-import { ProfilePersonalitySection } from "./_components/profile-personality-section";
 import { ProfileSectionCard } from "./_components/profile-section-card";
 import { ProfileSectionItem } from "./_components/profile-section-card";
 import { ProfileSidebar } from "./_components/profile-sidebar";
 import { ProfileSkillsSection } from "./_components/profile-skills-section";
 import { CurriculumSection } from "../curriculo/_components/navigation-curriculum";
-import { useResume } from "@/app/(protected)/curriculo/_hooks/use-resume";
+import { getResume } from "./_data/get-resume";
 
-export default function Profile() {
-  const { data: resume, isLoading } = useResume();
+export default async function Profile() {
+  const cookieStore = await cookies();
+  const token = cookieStore.get("token")?.value;
+
+  if (!token) {
+    redirect("/entrar?redirectTo=/perfil");
+  }
+
+  const resume = await getResume();
 
   return (
     <>
@@ -25,8 +31,8 @@ export default function Profile() {
           <div className="max-w-7xl mx-auto">
             <div className="grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-6 lg:gap-8">
               <main className="space-y-6 min-w-0">
-                <ProfileHeader resume={resume} loading={isLoading} />
-                <ProfileAboutSection resume={resume} loading={isLoading} />
+                <ProfileHeader resume={resume} />
+                <ProfileAboutSection resume={resume} />
 
                 <ProfileSectionCard
                   title="Suas experiências"
@@ -53,7 +59,7 @@ export default function Profile() {
                   ))}
                 </ProfileSectionCard>
 
-                <ProfileSkillsSection resume={resume} loading={isLoading} />
+                <ProfileSkillsSection resume={resume} />
 
                 <ProfileSectionCard
                   title="Suas formações"
@@ -103,7 +109,7 @@ export default function Profile() {
               </main>
 
               <aside className="hidden lg:block">
-                <ProfileSidebar resume={resume} loading={isLoading} />
+                <ProfileSidebar resume={resume} />
               </aside>
             </div>
           </div>

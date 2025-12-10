@@ -15,12 +15,11 @@ import { useProfileSidebarModel } from "./profile-sidebar.model";
 
 interface ProfileSidebarProps {
   resume?: Resume | null;
-  loading?: boolean;
 }
 
-export const ProfileSidebar = ({ resume, loading }: ProfileSidebarProps) => {
+export const ProfileSidebar = ({ resume }: ProfileSidebarProps) => {
   const { generating, personality, profileData, PERSONALITY_CONFIG } =
-    useProfileSidebarModel({ resume, loading });
+    useProfileSidebarModel({ resume });
 
   return (
     <aside className="flex flex-col gap-4">
@@ -30,7 +29,7 @@ export const ProfileSidebar = ({ resume, loading }: ProfileSidebarProps) => {
           Seu perfil
         </CardTitle>
 
-        {loading || generating || !personality ? (
+        {generating || !personality ? (
           <CardContent className="px-0 flex flex-col gap-2">
             <Skeleton className="h-6 w-full" />
             <Skeleton className="h-7 w-full" />

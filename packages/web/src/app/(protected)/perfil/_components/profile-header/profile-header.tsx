@@ -1,32 +1,17 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Resume } from "@/shared/types";
-import { Skeleton } from "@/components/ui/skeleton";
 
 interface ProfileHeaderProps {
   resume?: Resume | null;
-  loading?: boolean;
 }
 
-export const ProfileHeader = ({ resume, loading }: ProfileHeaderProps) => {
-  // Todos os dados agora vem do User (AboutUser foi mergeado)
+export const ProfileHeader = ({ resume }: ProfileHeaderProps) => {
   const fullName = resume?.user?.full_name || "";
   const phone = resume?.user?.phone || "";
   const city = resume?.user?.city || "";
   const state = resume?.user?.state || "";
   const linkedin = resume?.user?.linkedin || "";
-
-  if (loading) {
-    return (
-      <div className="flex flex-col">
-        <Skeleton className="w-[130px] h-[130px] md:w-[217px] md:h-[217px] rounded-full" />
-        <div className="mt-4 space-y-2">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-5 w-48" />
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="flex flex-col">

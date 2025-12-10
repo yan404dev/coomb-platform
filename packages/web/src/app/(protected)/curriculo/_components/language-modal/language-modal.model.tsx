@@ -1,10 +1,10 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
+import { useEffect, useTransition } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import { useResume } from "../../_hooks/use-resume";
 import { type LanguageRequest, languageSchema } from "./language-modal.schema";
-import { resumeService } from "../../_services/resume.service";
+import { addLanguageAction, updateLanguageAction } from "../../_actions/resume.actions";
 
 interface UseLanguageModalModelOptions {
   defaultValues?: Partial<LanguageRequest> | null;
@@ -22,7 +22,8 @@ export function useLanguageModalModel(
   options: UseLanguageModalModelOptions = {}
 ) {
   const { defaultValues, languageId, onSuccess } = options;
-  const { mutate } = useResume();
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
 
   const form = useForm<LanguageRequest>({
     resolver: zodResolver(languageSchema) as any,
@@ -39,33 +40,35 @@ export function useLanguageModalModel(
   async function submitLanguage(data: LanguageRequest) {
     const isEditing = !!languageId;
 
-    try {
-      if (isEditing && languageId) {
-        await resumeService.updateLanguage(languageId, {
-          name: data.name,
-          level: data.level as any,
-        });
-        toast.success("Idioma atualizado com sucesso");
-      } else {
-        await resumeService.addLanguage({
-          name: data.name,
-          level: data.level as any,
-        });
-        toast.success("Idioma adicionado com sucesso");
-      }
+    startTransition(async () => {
+      try {
+        if (isEditing && languageId) {
+          await updateLanguageAction(languageId, {
+            name: data.name,
+            level: data.level as any,
+          });
+          toast.success("Idioma atualizado com sucesso");
+        } else {
+          await addLanguageAction({
+            name: data.name,
+            level: data.level as any,
+          });
+          toast.success("Idioma adicionado com sucesso");
+        }
 
-      await mutate();
-      form.reset(EMPTY_LANGUAGE);
-      onSuccess?.();
-    } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.message || "Erro ao salvar idioma";
-      toast.error(errorMessage);
-    }
+        form.reset(EMPTY_LANGUAGE);
+        router.refresh();
+        onSuccess?.();
+      } catch (error: any) {
+        const errorMessage = error?.message || "Erro ao salvar idioma";
+        toast.error(errorMessage);
+      }
+    });
   }
 
   return {
     form,
     submitLanguage,
+    isPending,
   };
 }

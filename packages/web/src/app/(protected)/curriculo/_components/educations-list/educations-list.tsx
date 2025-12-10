@@ -1,13 +1,17 @@
 "use client";
 
+import type { Resume } from "@/shared/types";
 import { AddItemButton } from "@/components/add-item-button";
 import { EducationCard } from "../education-card";
 import { EducationModal } from "../education-modal";
 import { FormSection } from "@/components/form";
-import { useResume } from "../../_hooks/use-resume";
 import { useEducationsListModel } from "./educations-list.model";
 
-export function EducationsList() {
+interface EducationsListProps {
+  resume: Resume | null;
+}
+
+export function EducationsList({ resume }: EducationsListProps) {
   const {
     isModalOpen,
     editingEducationId,
@@ -15,13 +19,12 @@ export function EducationsList() {
     handleAdd,
     handleCloseModal,
   } = useEducationsListModel();
-  const { data: resume } = useResume();
 
   return (
     <>
       <FormSection id="formacoes" title="Suas formações">
         <div className="space-y-6">
-          <EducationCard onEdit={handleEdit} />
+          <EducationCard educations={resume?.educations ?? []} onEdit={handleEdit} />
           <AddItemButton label="Adicionar formação" onClick={handleAdd} />
         </div>
       </FormSection>

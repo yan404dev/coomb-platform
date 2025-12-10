@@ -4,61 +4,47 @@ import { AddItemButton } from "@/components/add-item-button";
 import { LanguageCard } from "../language-card";
 import { LanguageModal } from "../language-modal";
 import { FormSection } from "@/components/form";
-import type { Language } from "@/shared/types";
-import { useLanguagesListModel } from "./languages-list.model";
+import type { Resume, Language } from "@/shared/types";
+import { useLanguagesListViewModel } from "./languages-list.view-model";
 
-export function LanguagesList() {
-  const {
-    languages,
-    loading,
-    error,
-    isModalOpen,
-    selectedLanguage,
-    openCreateModal,
-    openEditModal,
-    handleModalChange,
-    removeLanguage,
-    updateLanguageLevel,
-  } = useLanguagesListModel();
+interface LanguagesListProps {
+  resume: Resume | null;
+}
+
+export function LanguagesList({ resume }: LanguagesListProps) {
+  const viewModel = useLanguagesListViewModel(resume);
 
   return (
     <>
       <FormSection id="idiomas" title="Seus idiomas" defaultOpen>
-        {error ? (
-          <p className="text-sm text-destructive">
-            Não foi possível carregar os idiomas no momento.
-          </p>
-        ) : null}
-
-        {loading ? (
-          <p className="text-sm text-muted-foreground">Carregando idiomas...</p>
-        ) : (
-          <div className="space-y-6">
-            <div className="space-y-8">
-              {languages.map((language) => (
-                <LanguageCard
-                  key={language.id}
-                  name={language.name}
-                  level={(language.level as Language["level"]) ?? "nenhum"}
-                  onLevelChange={(level) =>
-                    updateLanguageLevel(language.id, level as Language["level"])
-                  }
-                  onRemove={() => removeLanguage(language.id)}
-                  onEdit={() => openEditModal(language)}
-                />
-              ))}
-            </div>
-
-            <AddItemButton label="Adicionar idioma" onClick={openCreateModal} />
+        <div className="space-y-6">
+          <div className="space-y-8">
+            {viewModel.languages.map((language) => (
+              <LanguageCard
+                key={language.id}
+                name={language.name}
+                level={(language.level as Language["level"]) ?? "nenhum"}
+                onLevelChange={(level) =>
+                  viewModel.updateLanguageLevel(language.id, level as Language["level"])
+                }
+                onRemove={() => viewModel.removeLanguage(language.id)}
+                onEdit={() => viewModel.openEditModal(language)}
+              />
+            ))}
           </div>
-        )}
+
+          <AddItemButton
+            label="Adicionar idioma"
+            onClick={viewModel.openCreateModal}
+          />
+        </div>
       </FormSection>
 
       <LanguageModal
-        open={isModalOpen}
-        onOpenChange={handleModalChange}
-        defaultValues={selectedLanguage as any}
-        languageId={selectedLanguage?.id}
+        open={viewModel.isModalOpen}
+        onOpenChange={viewModel.handleModalChange}
+        defaultValues={viewModel.selectedLanguage as any}
+        languageId={viewModel.selectedLanguage?.id}
       />
     </>
   );

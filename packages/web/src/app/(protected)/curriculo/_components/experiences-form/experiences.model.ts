@@ -1,15 +1,15 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-
+import type { Resume } from "@/shared/types";
 import { userService } from "@/shared/services/user.service";
-import { useResume } from "../../_hooks/use-resume";
 import { useUser } from "@/shared/hooks/use-user";
 import { ExperiencesFormRequest, experiencesFormSchema } from "./experiences.schema";
 
-export function useExperiencesModel(onContinue?: () => void) {
-  const { data, isLoading, error, mutate } = useResume();
+export function useExperiencesModel(resume: Resume | null, onContinue?: () => void) {
+  const router = useRouter();
   const { mutate: mutateUser } = useUser();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingExperienceId, setEditingExperienceId] = useState<string | undefined>(undefined);
@@ -23,20 +23,21 @@ export function useExperiencesModel(onContinue?: () => void) {
   });
 
   useEffect(() => {
-    const aboutData = data?.user;
+    const aboutData = resume?.user;
     if (aboutData) {
       form.reset({
         professional_summary: aboutData.professional_summary ?? "",
         career_goals: aboutData.career_goals ?? "",
       });
     }
-  }, [data, form]);
+  }, [resume, form]);
 
   async function onSubmit(formData: ExperiencesFormRequest) {
-    if (!data) return;
+    if (!resume) return;
 
-    await userService.update(data.user_id, formData);
-    await Promise.all([mutate(), mutateUser()]);
+    await userService.update(resume.user_id, formData);
+    await mutateUser();
+    router.refresh();
     toast.success("Resumo profissional atualizado com sucesso");
 
     if (onContinue) {
@@ -60,10 +61,8 @@ export function useExperiencesModel(onContinue?: () => void) {
 
   return {
     form,
-    loading: isLoading && !data,
-    error,
     onSubmit,
-    data,
+    resume,
     isModalOpen,
     editingExperienceId,
     handleEdit,

@@ -1,26 +1,23 @@
 "use client";
 
-import { useExperienceCardModel } from "./experience-card.model";
-import { formatPeriod, truncateText } from "@/shared/lib/format";
+import type { Experience } from "@/shared/types";
+import { useExperienceCardViewModel } from "./experience-card.view-model";
 
 interface ExperienceCardProps {
+  experiences: Experience[];
   onEdit?: (experienceId: string) => void;
 }
 
-export function ExperienceCard({ onEdit }: ExperienceCardProps) {
-  const { experiences, isLoading, deleteExperience } = useExperienceCardModel();
+export function ExperienceCard({ experiences, onEdit }: ExperienceCardProps) {
+  const viewModel = useExperienceCardViewModel(experiences, onEdit);
 
-  if (isLoading) {
-    return <div>Carregando experiências...</div>;
-  }
-
-  if (experiences.length === 0) {
+  if (viewModel.isEmpty) {
     return null;
   }
 
   return (
     <div className="space-y-6">
-      {experiences.map((experience) => (
+      {viewModel.experiencesData.map((experience) => (
         <div key={experience.id} className="space-y-4">
           <div className="border border-border rounded-lg p-6 space-y-3">
             <div>
@@ -32,18 +29,12 @@ export function ExperienceCard({ onEdit }: ExperienceCardProps) {
 
             <div>
               <p className="text-xs font-semibold text-foreground">Período</p>
-              <p className="text-sm text-foreground">
-                {formatPeriod(
-                  experience.startDate,
-                  experience.endDate,
-                  experience.current ?? false
-                )}
-              </p>
+              <p className="text-sm text-foreground">{experience.period}</p>
             </div>
 
             {experience.description && (
               <p className="text-sm text-foreground leading-relaxed">
-                {truncateText(experience.description)}
+                {experience.description}
               </p>
             )}
           </div>
@@ -51,14 +42,14 @@ export function ExperienceCard({ onEdit }: ExperienceCardProps) {
           <div className="flex gap-4">
             <button
               type="button"
-              onClick={() => onEdit?.(experience.id)}
+              onClick={() => viewModel.handleEdit(experience.id)}
               className="text-[#028A5A] font-semibold text-sm hover:underline"
             >
               Editar
             </button>
             <button
               type="button"
-              onClick={() => void deleteExperience(experience.id)}
+              onClick={() => viewModel.deleteExperience(experience.id)}
               className="text-[#028A5A] font-semibold text-sm hover:underline"
             >
               Remover
