@@ -3,10 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  addEducationAction,
-  updateEducationAction,
-} from "../../_actions/resume.actions";
+import { educationService } from "../../_services/education.service";
 import {
   educationSchema,
   type EducationRequest,
@@ -60,7 +57,7 @@ export const useEducationModalModel = ({
       startTransition(async () => {
         try {
           if (isEditing && educationId) {
-            await updateEducationAction(educationId, {
+            await educationService.update(educationId, {
               degree: data.degree,
               institution: data.institution,
               startDate: data.startDate,
@@ -68,7 +65,7 @@ export const useEducationModalModel = ({
               current: data.current,
             });
           } else {
-            await addEducationAction({
+            await educationService.add({
               degree: data.degree,
               institution: data.institution,
               startDate: data.startDate,

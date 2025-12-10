@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { type LanguageRequest, languageSchema } from "./language-modal.schema";
-import { addLanguageAction, updateLanguageAction } from "../../_actions/resume.actions";
+import { languageService } from "../../_services/language.service";
 
 interface UseLanguageModalModelOptions {
   defaultValues?: Partial<LanguageRequest> | null;
@@ -43,13 +43,13 @@ export function useLanguageModalModel(
     startTransition(async () => {
       try {
         if (isEditing && languageId) {
-          await updateLanguageAction(languageId, {
+          await languageService.update(languageId, {
             name: data.name,
             level: data.level as any,
           });
           toast.success("Idioma atualizado com sucesso");
         } else {
-          await addLanguageAction({
+          await languageService.add({
             name: data.name,
             level: data.level as any,
           });

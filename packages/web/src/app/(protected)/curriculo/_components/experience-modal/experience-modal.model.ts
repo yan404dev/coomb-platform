@@ -3,10 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  addExperienceAction,
-  updateExperienceAction,
-} from "../../_actions/resume.actions";
+import { experienceService } from "../../_services/experience.service";
 import {
   experienceSchema,
   type ExperienceRequest,
@@ -62,7 +59,7 @@ export const useExperienceModalModel = ({
       startTransition(async () => {
         try {
           if (isEditing && experienceId) {
-            await updateExperienceAction(experienceId, {
+            await experienceService.update(experienceId, {
               position: data.position,
               company: data.company,
               startDate: data.startDate,
@@ -71,7 +68,7 @@ export const useExperienceModalModel = ({
               description: data.description ?? undefined,
             });
           } else {
-            await addExperienceAction({
+            await experienceService.add({
               position: data.position,
               company: data.company,
               startDate: data.startDate,

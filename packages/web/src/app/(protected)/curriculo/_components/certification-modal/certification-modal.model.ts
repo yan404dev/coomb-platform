@@ -3,10 +3,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import {
-  addCertificationAction,
-  updateCertificationAction,
-} from "../../_actions/resume.actions";
+import { certificationService } from "../../_services/certification.service";
 import {
   certificationSchema,
   type CertificationRequest,
@@ -56,13 +53,13 @@ export const useCertificationModalModel = ({
       startTransition(async () => {
         try {
           if (isEditing && certificationId) {
-            await updateCertificationAction(certificationId, {
+            await certificationService.update(certificationId, {
               name: data.name,
               institution: data.institution,
               completionDate: data.completionDate,
             });
           } else {
-            await addCertificationAction({
+            await certificationService.add({
               name: data.name,
               institution: data.institution,
               completionDate: data.completionDate,

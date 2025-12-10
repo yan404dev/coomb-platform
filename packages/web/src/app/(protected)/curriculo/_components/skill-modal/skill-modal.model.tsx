@@ -4,7 +4,7 @@ import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import { type SkillRequest, skillSchema } from "./skill-modal.schema";
-import { addSkillAction, updateSkillAction } from "../../_actions/resume.actions";
+import { skillService } from "../../_services/skill.service";
 
 interface UseSkillModalModelOptions {
   defaultValues?: Partial<SkillRequest> | null;
@@ -42,13 +42,13 @@ export function useSkillModalModel(options: UseSkillModalModelOptions = {}) {
     startTransition(async () => {
       try {
         if (isEditing && skillId) {
-          await updateSkillAction(skillId, {
+          await skillService.update(skillId, {
             name: data.name,
             level: data.level ?? undefined,
           });
           toast.success("Habilidade atualizada com sucesso");
         } else {
-          await addSkillAction({
+          await skillService.add({
             name: data.name,
             level: data.level ?? undefined,
           });
