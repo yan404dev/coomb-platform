@@ -2,10 +2,7 @@ import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Resume, Skill } from "@/shared/types";
-import {
-  deleteSkillAction,
-  updateSkillAction,
-} from "../../_actions/resume.actions";
+import { skillService } from "../../_services/skill.service";
 
 export function useSkillsListViewModel(resume: Resume | null) {
   const router = useRouter();
@@ -46,7 +43,7 @@ export function useSkillsListViewModel(resume: Resume | null) {
     (skillId: string) => {
       startTransition(async () => {
         try {
-          await deleteSkillAction(skillId);
+          await skillService.delete(skillId);
           toast.success("Habilidade removida com sucesso");
           router.refresh();
         } catch (error: any) {
@@ -62,7 +59,7 @@ export function useSkillsListViewModel(resume: Resume | null) {
     (skillId: string, level: Skill["level"]) => {
       startTransition(async () => {
         try {
-          await updateSkillAction(skillId, { level: level ?? undefined });
+          await skillService.updateLevel(skillId, level);
           router.refresh();
         } catch (error: any) {
           const errorMessage =

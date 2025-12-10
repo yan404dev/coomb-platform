@@ -2,7 +2,7 @@ import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Certification } from "@/shared/types";
-import { deleteCertificationAction } from "../../_actions/resume.actions";
+import { certificationService } from "../../_services/certification.service";
 
 interface CertificationViewModel {
   id: string;
@@ -38,7 +38,7 @@ export function useCertificationCardViewModel(
     (certificationId: string) => {
       startTransition(async () => {
         try {
-          await deleteCertificationAction(certificationId);
+          await certificationService.delete(certificationId);
           toast.success("Certificação removida com sucesso");
           router.refresh();
         } catch (error: any) {

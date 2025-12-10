@@ -2,10 +2,7 @@ import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Resume, Language } from "@/shared/types";
-import {
-  deleteLanguageAction,
-  updateLanguageAction,
-} from "../../_actions/resume.actions";
+import { languageService } from "../../_services/language.service";
 
 export function useLanguagesListViewModel(resume: Resume | null) {
   const router = useRouter();
@@ -46,7 +43,7 @@ export function useLanguagesListViewModel(resume: Resume | null) {
     (languageId: string) => {
       startTransition(async () => {
         try {
-          await deleteLanguageAction(languageId);
+          await languageService.delete(languageId);
           toast.success("Idioma removido com sucesso");
           router.refresh();
         } catch (error: any) {
@@ -62,9 +59,7 @@ export function useLanguagesListViewModel(resume: Resume | null) {
     (languageId: string, level: Language["level"]) => {
       startTransition(async () => {
         try {
-          await updateLanguageAction(languageId, {
-            level: level ?? undefined,
-          });
+          await languageService.updateLevel(languageId, level);
           router.refresh();
         } catch (error: any) {
           const errorMessage =

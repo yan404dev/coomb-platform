@@ -2,7 +2,7 @@ import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Experience } from "@/shared/types";
-import { deleteExperienceAction } from "../../_actions/resume.actions";
+import { experienceService } from "../../_services/experience.service";
 import { formatPeriod, truncateText } from "@/shared/lib/format";
 
 interface ExperienceViewModel {
@@ -41,7 +41,7 @@ export function useExperienceCardViewModel(
     (experienceId: string) => {
       startTransition(async () => {
         try {
-          await deleteExperienceAction(experienceId);
+          await experienceService.delete(experienceId);
           toast.success("Experiência removida com sucesso");
           router.refresh();
         } catch (error: any) {

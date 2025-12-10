@@ -2,7 +2,7 @@ import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import type { Education } from "@/shared/types";
-import { deleteEducationAction } from "../../_actions/resume.actions";
+import { educationService } from "../../_services/education.service";
 import { formatPeriod } from "@/shared/lib/format";
 
 interface EducationViewModel {
@@ -39,7 +39,7 @@ export function useEducationCardViewModel(
     (educationId: string) => {
       startTransition(async () => {
         try {
-          await deleteEducationAction(educationId);
+          await educationService.delete(educationId);
           toast.success("Formação removida com sucesso");
           router.refresh();
         } catch (error: any) {
