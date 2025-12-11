@@ -1,33 +1,17 @@
 "use server";
 
-import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { toast } from "sonner";
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
+import { serverApi, authCookie } from "@/shared/lib/server-api";
 
 export async function logoutAction(): Promise<void> {
-  const cookieStore = await cookies();
-  cookieStore.delete("token");
+  await authCookie.delete();
   redirect("/entrar");
 }
 
 export async function transferSessionAction(sessionId: string): Promise<void> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get("token")?.value;
-
-  if (!token || !sessionId) return;
+  if (!sessionId) return;
 
   try {
-    await fetch(`${API_URL}/api/v1/session/transfer`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
-      body: JSON.stringify({ sessionId }),
-    });
-  } catch {
-    toast.error("Erro ao transferir sessão anônima.");
-  }
+    await serverApi.post("/api/v1/session/transfer", { sessionId });
+  } catch {}
 }
