@@ -16,8 +16,8 @@ import {
   FormMessage,
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
-import { registerSchema, type RegisterRequest } from "@/app/entrar/_schemas/auth.schema";
-import { registerAction } from "@/app/(auth)/_actions/auth.actions";
+import { registerSchema, type RegisterRequest } from "../_schemas/auth.schema";
+import { registerAction } from "../_actions/register.actions";
 
 const SESSION_KEY = "coomb_session_id";
 

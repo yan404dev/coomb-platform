@@ -1,7 +1,7 @@
 import { useRouter, useSearchParams } from "next/navigation";
 import { toast } from "sonner";
 import { mutate } from "swr";
-import type { LoginRequest } from "@/app/entrar/_schemas/auth.schema";
+import type { LoginRequest } from "./_schemas/auth.schema";
 import { authService, sessionService } from "@/shared/services";
 
 const SESSION_KEY = "coomb_session_id";

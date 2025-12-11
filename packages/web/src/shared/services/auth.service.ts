@@ -1,6 +1,7 @@
 import type { User } from "@/shared/entities";
 import { api } from "@/shared/lib/api";
-import type { LoginRequest, RegisterRequest } from "@/app/entrar/_schemas/auth.schema";
+import type { LoginRequest } from "@/app/entrar/_schemas/auth.schema";
+import type { RegisterRequest } from "@/app/cadastrar/_schemas/auth.schema";
 
 interface AuthResponse {
   access_token: string;

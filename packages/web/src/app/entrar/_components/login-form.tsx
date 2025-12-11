@@ -16,7 +16,7 @@ import {
 } from "@/shared/components/ui/form";
 import { Input } from "@/shared/components/ui/input";
 import { loginSchema, type LoginRequest } from "../_schemas/auth.schema";
-import { loginAction } from "@/app/(auth)/_actions/auth.actions";
+import { loginAction } from "../_actions/login.actions";
 
 const SESSION_KEY = "coomb_session_id";
 
