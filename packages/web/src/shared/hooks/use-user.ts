@@ -7,17 +7,14 @@ import { apiClient } from "@/shared/lib/api";
 export function useUser() {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = async () => {
+    setIsLoading(true);
     try {
-      setIsLoading(true);
       const data = await apiClient.get<User>("/api/v1/auth/me");
       setUser(data);
-      setError(null);
-    } catch (err) {
+    } catch {
       setUser(null);
-      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
     } finally {
       setIsLoading(false);
     }
@@ -27,11 +24,5 @@ export function useUser() {
     fetchUser();
   }, []);
 
-  return {
-    user,
-    error,
-    isLoading,
-    isValidating: isLoading,
-    mutate: fetchUser,
-  };
+  return { user, isLoading, mutate: fetchUser };
 }
