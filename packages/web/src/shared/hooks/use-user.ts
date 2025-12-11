@@ -1,42 +1,76 @@
 "use client";
 
-import { useEffect } from "react";
-import useSWR from "swr";
+import { useState, useEffect, useCallback } from "react";
 import type { User } from "@/shared/entities";
-import { authService } from "@/shared/services";
+import { getUserAction } from "@/shared/actions/user.actions";
 
 export function useUser() {
-  const { data, error, isLoading, isValidating, mutate } = useSWR<User>(
-    "/api/v1/auth/me",
-    () => authService.me()
-  );
+  const [user, setUser] = useState<User | null>(null);
+  const [error, setError] = useState<Error | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchUser = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setError(null);
+
+      const cachedUser = typeof window !== "undefined"
+        ? window.localStorage.getItem("user")
+        : null;
+
+      if (cachedUser) {
+        setUser(JSON.parse(cachedUser));
+      }
+
+      const userData = await getUserAction();
+
+      if (userData) {
+        setUser(userData);
+        if (typeof window !== "undefined") {
+          try {
+            window.localStorage.setItem("user", JSON.stringify(userData));
+          } catch {
+            // Ignore storage errors
+          }
+        }
+      } else {
+        setUser(null);
+        if (typeof window !== "undefined") {
+          try {
+            window.localStorage.removeItem("user");
+          } catch {
+            // Ignore storage errors
+          }
+        }
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
+      setUser(null);
+      if (typeof window !== "undefined") {
+        try {
+          window.localStorage.removeItem("user");
+        } catch {
+          // Ignore storage errors
+        }
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
-    if (typeof window === "undefined") {
-      return;
-    }
+    fetchUser();
+  }, [fetchUser]);
 
-    if (!data) {
-      try {
-        window.localStorage.removeItem("user");
-      } catch {
-        // Ignore errors (e.g., in private browsing mode)
-      }
-      return;
-    }
-
-    try {
-      window.localStorage.setItem("user", JSON.stringify(data));
-    } catch {
-      // Ignore errors (e.g., storage quota exceeded)
-    }
-  }, [data]);
+  const mutate = useCallback(() => {
+    return fetchUser();
+  }, [fetchUser]);
 
   return {
-    user: data,
+    user,
     error,
     isLoading,
-    isValidating,
+    isValidating: isLoading,
     mutate,
   };
 }

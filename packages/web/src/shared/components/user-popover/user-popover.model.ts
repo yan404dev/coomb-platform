@@ -16,7 +16,7 @@ export function useUserPopoverModel({ onLogout }: UseUserPopoverModelProps) {
   const handleLogout = () => {
     try {
       authService.logout();
-      mutate(undefined, false);
+      mutate();
       onLogout?.();
       setOpen(false);
       router.push("/");
