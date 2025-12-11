@@ -6,7 +6,7 @@ import { toast } from "sonner";
 import { userService } from "@/shared/services/user.service";
 import { useResume } from "../../_hooks/use-resume";
 import { AboutFormRequest, aboutFormSchema } from "./about.schema";
-import { ResumeEntity } from "@/shared/types";
+import { Resume } from "@/shared/entities";
 
 export function useAboutModel(onContinue?: () => void) {
   const { data, isLoading, error, mutate } = useResume();
@@ -45,7 +45,7 @@ export function useAboutModel(onContinue?: () => void) {
 
   async function onSubmit(
     formData: AboutFormRequest
-  ): Promise<ResumeEntity | undefined> {
+  ): Promise<Resume | undefined> {
     if (!data?.user?.id) return;
 
     await userService.update(data.user.id, formData);

@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Experience } from "@/shared/types";
+import type { Experience } from "@/shared/entities";
 import { experienceService } from "../../_services/experience.service";
 import { formatPeriod, truncateText } from "@/shared/lib/format";
 

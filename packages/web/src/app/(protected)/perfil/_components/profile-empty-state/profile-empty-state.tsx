@@ -1,6 +1,6 @@
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Card, CardContent, CardDescription, CardTitle } from "@/shared/components/ui/card";
 import { FileText, Sparkles } from "lucide-react";
 
 export const ProfileEmptyState = () => {

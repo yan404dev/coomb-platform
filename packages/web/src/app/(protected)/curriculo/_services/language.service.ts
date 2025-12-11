@@ -1,4 +1,5 @@
-import type { Language } from "@/shared/types";
+import type { Language } from "@/shared/entities";
+import type { CreateLanguageInput } from "@/shared/schemas/resume.schema";
 import {
   addLanguageAction,
   updateLanguageAction,
@@ -6,13 +7,13 @@ import {
 } from "../_actions/resume.actions";
 
 class LanguageService {
-  async add(data: Omit<Language, "id" | "createdAt" | "updatedAt">): Promise<void> {
+  async add(data: CreateLanguageInput): Promise<void> {
     await addLanguageAction(data);
   }
 
   async update(
     languageId: string,
-    data: Partial<Omit<Language, "id">>
+    data: Partial<Omit<Language, "id" | "createdAt" | "updatedAt">>
   ): Promise<void> {
     await updateLanguageAction(languageId, data);
   }

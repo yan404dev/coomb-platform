@@ -14,7 +14,7 @@ import type {
   Language,
   Education,
   Certification,
-} from "@/shared/types";
+} from "@/shared/entities";
 
 const ACCEPTED_MIME_TYPES = new Set([
   "application/pdf",
@@ -34,8 +34,8 @@ const ensureArray = <T>(value: T[] | null | undefined): T[] =>
   Array.isArray(value) ? value : [];
 
 const normalizeExperiences = (
-  experiences: (Experience | Omit<Experience, "id">)[] | null | undefined
-): Omit<Experience, "id">[] =>
+  experiences: (Experience | Omit<Experience, "id" | "createdAt" | "updatedAt">)[] | null | undefined
+): Omit<Experience, "id" | "createdAt" | "updatedAt">[] =>
   ensureArray(experiences).map((experience) => ({
     company: experience.company ?? "",
     position: experience.position ?? "",
@@ -46,16 +46,16 @@ const normalizeExperiences = (
   }));
 
 const normalizeSkills = (
-  skills: (Skill | Omit<Skill, "id">)[] | null | undefined
-): Omit<Skill, "id">[] =>
+  skills: (Skill | Omit<Skill, "id" | "createdAt" | "updatedAt">)[] | null | undefined
+): Omit<Skill, "id" | "createdAt" | "updatedAt">[] =>
   ensureArray(skills).map((skill) => ({
     name: skill.name ?? "",
     level: skill.level || null,
   }));
 
 const normalizeLanguages = (
-  languages: (Language | Omit<Language, "id">)[] | null | undefined
-): Omit<Language, "id">[] =>
+  languages: (Language | Omit<Language, "id" | "createdAt" | "updatedAt">)[] | null | undefined
+): Omit<Language, "id" | "createdAt" | "updatedAt">[] =>
   ensureArray(languages).map((language) => ({
     name:
       (language as Language & { language?: string }).name ??
@@ -73,8 +73,8 @@ const normalizeLanguages = (
   }));
 
 const normalizeEducations = (
-  educations: (Education | Omit<Education, "id">)[] | null | undefined
-): Omit<Education, "id">[] =>
+  educations: (Education | Omit<Education, "id" | "createdAt" | "updatedAt">)[] | null | undefined
+): Omit<Education, "id" | "createdAt" | "updatedAt">[] =>
   ensureArray(educations).map((education) => ({
     degree: education.degree ?? "",
     institution: education.institution ?? "",
@@ -85,10 +85,10 @@ const normalizeEducations = (
 
 const normalizeCertifications = (
   certifications:
-    | (Certification | Omit<Certification, "id">)[]
+    | (Certification | Omit<Certification, "id" | "createdAt" | "updatedAt">)[]
     | null
     | undefined
-): Omit<Certification, "id">[] =>
+): Omit<Certification, "id" | "createdAt" | "updatedAt">[] =>
   ensureArray(certifications).map((certification) => ({
     name: certification.name ?? "",
     institution: certification.institution ?? "",

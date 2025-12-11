@@ -98,7 +98,7 @@ export class MessageService {
     const messages = await this.messageRepository.findByChatId(result.chatId);
     const chatMessages: ChatMessage[] = messages.map(
       (msg: Message): ChatMessage => ({
-        role: (msg.messageType === MessageType.USER ? "user" : "assistant") as
+        role: (msg.role === "USER" ? "user" : "assistant") as
           | "user"
           | "assistant",
         content: msg.content,
@@ -226,13 +226,12 @@ export class MessageService {
     if (!this.coombAI) return;
 
     const messages = await this.messageRepository.findByChatId(chatId);
-    // O conteúdo do currículo já está incluído na própria mensagem (salvo no banco)
-    // não precisa mais adicionar dinamicamente
+
     const chatMessages: ChatMessage[] = messages.map(
       (msg: Message): ChatMessage => ({
-        role: (msg.messageType === MessageType.USER
-          ? "user"
-          : "assistant") as "user" | "assistant",
+        role: (msg.role === "USER" ? "user" : "assistant") as
+          | "user"
+          | "assistant",
         content: msg.content,
       })
     );
@@ -280,8 +279,7 @@ export class MessageService {
         fileName
       );
       extractedResumeData = { raw_text: extractedText };
-      // Inclui o conteúdo do currículo NA PRÓPRIA MENSAGEM para que fique salvo no banco
-      // Isso garante que quando a vaga for enviada depois, o currículo ainda estará disponível
+
       messageContent = `Arquivo anexado: ${fileName}\n\n=== CONTEÚDO DO CURRÍCULO ===\n${extractedText}`;
     } catch (error) {
       this.logger.error("Erro ao processar arquivo:", error);

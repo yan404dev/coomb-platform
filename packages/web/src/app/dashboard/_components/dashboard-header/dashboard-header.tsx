@@ -1,8 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Button, buttonVariants } from "@/components/ui/button";
-import { UserPopover, Logo } from "@/components";
+import { Button, buttonVariants } from "@/shared/components/ui/button";
+import { UserPopover, Logo } from "@/shared/components";
 import { useUser } from "@/shared/hooks/use-user";
 
 export const DashboardHeader = () => {

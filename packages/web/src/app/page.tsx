@@ -1,5 +1,5 @@
-import { Footer, Header, LogoHero } from "@/components";
-import { buttonVariants } from "@/components/ui/button";
+import { Footer, Header, LogoHero } from "@/shared/components";
+import { buttonVariants } from "@/shared/components/ui/button";
 import Link from "next/link";
 
 const steps = [

@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Header } from "@/components";
+import { Header } from "@/shared/components";
 import { LoginForm } from "./_components/login-form";
 
 export default function Page() {

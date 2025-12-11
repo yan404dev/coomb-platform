@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Certification } from "@/shared/types";
+import type { Certification } from "@/shared/entities";
 import { certificationService } from "../../_services/certification.service";
 
 interface CertificationViewModel {

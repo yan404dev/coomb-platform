@@ -1,6 +1,6 @@
 "use client";
 
-import type { Certification } from "@/shared/types";
+import type { Certification } from "@/shared/entities";
 import { useCertificationCardViewModel } from "./certification-card.view-model";
 
 interface CertificationCardProps {

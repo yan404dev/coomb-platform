@@ -2,11 +2,8 @@ import { useCallback } from "react";
 import useSWR from "swr";
 import useSWRMutation from "swr/mutation";
 import { chatService } from "@/app/dashboard/_services/chat.service";
-import type {
-  Chat,
-  CreateChatDto,
-  UpdateChatTitleDto,
-} from "@/shared/types/chat.types";
+import type { Chat } from "@/shared/entities";
+import type { CreateChatInput, UpdateChatTitleInput } from "@/shared/schemas/chat.schema";
 
 export const CHATS_KEY = "/api/v1/chats";
 
@@ -16,7 +13,7 @@ const fetcher = async (): Promise<Chat[]> => {
 
 const createChat = async (
   _: string,
-  { arg }: { arg: CreateChatDto }
+  { arg }: { arg: CreateChatInput }
 ): Promise<Chat> => {
   return await chatService.create(arg);
 };
@@ -27,7 +24,7 @@ const deleteChat = async (_: string, { arg }: { arg: string }) => {
 
 const updateChatTitle = async (
   _: string,
-  { arg }: { arg: { chatId: string; dto: UpdateChatTitleDto } }
+  { arg }: { arg: { chatId: string; dto: UpdateChatTitleInput } }
 ): Promise<Chat> => {
   return await chatService.updateTitle(arg.chatId, arg.dto);
 };
@@ -65,7 +62,7 @@ export function useChats({ enabled = true }: UseChatsOptions = {}) {
   );
 
   const createNewChat = useCallback(
-    async (dto: CreateChatDto = {}) => {
+    async (dto: CreateChatInput = {}) => {
       if (!enabled) {
         return null;
       }
@@ -88,7 +85,7 @@ export function useChats({ enabled = true }: UseChatsOptions = {}) {
   );
 
   const updateConversationTitle = useCallback(
-    async (chatId: string, dto: UpdateChatTitleDto) => {
+    async (chatId: string, dto: UpdateChatTitleInput) => {
       if (!enabled) {
         return;
       }

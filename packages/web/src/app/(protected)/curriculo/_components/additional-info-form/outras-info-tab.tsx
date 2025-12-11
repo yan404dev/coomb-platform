@@ -1,14 +1,14 @@
 "use client";
 
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 import { Controller } from "react-hook-form";
 import {
   FormField,
   FormInput,
   FormSaveFooter,
   FormSection,
-} from "@/components/form";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+} from "@/shared/components/form";
+import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
 import { useOutrasInfoModel } from "./outras-info.model";
 
 interface OutrasInfoTabProps {

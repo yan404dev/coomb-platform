@@ -1,15 +1,15 @@
 "use client";
-import type { Resume } from "@/shared/types";
-import { AddItemButton } from "@/components/add-item-button";
+import type { Resume } from "@/shared/entities";
+import { AddItemButton } from "@/shared/components/add-item-button";
 import { ImportCurriculumCard } from "../curriculum/import-curriculum-card";
 import { ExperienceCard } from "../experience-card";
 import { ExperienceModal } from "../experience-modal";
 import { EducationsList } from "../educations-list";
 import { CertificationsList } from "../certifications-list";
-import { FormSaveFooter, FormSection } from "@/components/form";
-import { InfoBox } from "@/components/info-box";
-import { Form } from "@/components/ui/form";
-import { TextareaField } from "@/components/ui/textarea-field";
+import { FormSaveFooter, FormSection } from "@/shared/components/form";
+import { InfoBox } from "@/shared/components/info-box";
+import { Form } from "@/shared/components/ui/form";
+import { TextareaField } from "@/shared/components/ui/textarea-field";
 import { useExperiencesModel } from "./experiences.model";
 
 interface ExperiencesFormProps {

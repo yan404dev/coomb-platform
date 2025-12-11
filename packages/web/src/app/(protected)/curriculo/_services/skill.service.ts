@@ -1,4 +1,5 @@
-import type { Skill } from "@/shared/types";
+import type { Skill } from "@/shared/entities";
+import type { CreateSkillInput } from "@/shared/schemas/resume.schema";
 import {
   addSkillAction,
   updateSkillAction,
@@ -6,11 +7,11 @@ import {
 } from "../_actions/resume.actions";
 
 class SkillService {
-  async add(data: Omit<Skill, "id" | "createdAt" | "updatedAt">): Promise<void> {
+  async add(data: CreateSkillInput): Promise<void> {
     await addSkillAction(data);
   }
 
-  async update(skillId: string, data: Partial<Omit<Skill, "id">>): Promise<void> {
+  async update(skillId: string, data: Partial<Omit<Skill, "id" | "createdAt" | "updatedAt">>): Promise<void> {
     await updateSkillAction(skillId, data);
   }
 

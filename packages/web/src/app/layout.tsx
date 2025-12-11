@@ -3,8 +3,6 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
 import { Toaster } from "sonner";
-import { SWRProvider } from "@/providers/swr-provider";
-import { AnonymousSessionProvider } from "@/providers/anonymous-session-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,11 +29,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <SWRProvider>
-          <AnonymousSessionProvider>
-            <NuqsAdapter>{children}</NuqsAdapter>
-          </AnonymousSessionProvider>
-        </SWRProvider>
+        <NuqsAdapter>{children}</NuqsAdapter>
         <Toaster richColors position="bottom-right" />
       </body>
     </html>

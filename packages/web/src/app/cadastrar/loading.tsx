@@ -1,5 +1,5 @@
-import { Header } from "@/components";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Header } from "@/shared/components";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 export default function RegisterLoading() {
   return (

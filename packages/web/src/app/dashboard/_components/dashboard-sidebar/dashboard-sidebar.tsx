@@ -1,18 +1,18 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import {
   Sheet,
   SheetContent,
   SheetTitle,
   SheetDescription,
-} from "@/components/ui/sheet";
+} from "@/shared/components/ui/sheet";
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "@/shared/components/ui/dropdown-menu";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -22,11 +22,11 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
-import { Input } from "@/components/ui/input";
+} from "@/shared/components/ui/alert-dialog";
+import { Input } from "@/shared/components/ui/input";
 import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 import { Plus, MessageSquare, Menu, X, MoreVertical, Pencil, Trash2 } from "lucide-react";
-import { LoginBanner } from "@/components/login-banner";
+import { LoginBanner } from "@/shared/components/login-banner";
 import { useDashboardSidebarModel } from "./dashboard-sidebar.model";
 
 export interface DashboardSidebarProps {

@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import useSWR from "swr";
-import type { User } from "@/shared/types";
+import type { User } from "@/shared/entities";
 import { authService } from "@/shared/services";
 
 export function useUser() {

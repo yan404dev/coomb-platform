@@ -42,8 +42,8 @@ export function useOutrasInfoModel() {
     form.reset({
       city: aboutData?.city ?? "",
       state: aboutData?.state ?? "",
-      salary_expectation: aboutData?.salary_expectation ?? "",
-      has_cnh: aboutData?.has_cnh ?? false,
+      salary_expectation: aboutData?.salaryExpectation ?? "",
+      has_cnh: aboutData?.hasCnh ?? false,
       linkedin: aboutData?.linkedin ?? "",
       instagram: aboutData?.instagram ?? "",
       facebook: aboutData?.facebook ?? "",
@@ -61,7 +61,7 @@ export function useOutrasInfoModel() {
       return;
     }
 
-    await userService.update(resume.user_id, form.getValues());
+    await userService.update(resume.userId, form.getValues());
     await Promise.all([mutate(), mutateUser()]);
     toast.success("Informações adicionais atualizadas com sucesso");
   };

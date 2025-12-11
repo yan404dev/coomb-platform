@@ -1,5 +1,5 @@
 import { Suspense } from "react";
-import { Header } from "@/components";
+import { Header } from "@/shared/components";
 import { RegisterForm } from "./_components/register-form";
 
 export default function Page() {

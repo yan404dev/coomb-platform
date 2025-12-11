@@ -1,4 +1,4 @@
-import type { User } from "@/shared/types";
+import type { User } from "@/shared/entities";
 import { api } from "@/shared/lib/api";
 import type { LoginRequest, RegisterRequest } from "@/app/entrar/_schemas/auth.schema";
 

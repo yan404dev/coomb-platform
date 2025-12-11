@@ -3,7 +3,7 @@
 import { useState, lazy, Suspense } from "react";
 import { DASHBOARD_SUGGESTIONS } from "@/shared/constants/dashboard-suggestions";
 import { useUser } from "@/shared/hooks/use-user";
-import { Skeleton } from "@/components/ui/skeleton";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import { DashboardHeader } from "./_components/dashboard-header";
 import { DashboardInput } from "./_components/dashboard-input";
 import { useDashboardModel } from "./_hooks/use-dashboard";

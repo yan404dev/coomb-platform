@@ -6,8 +6,8 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
-import { Card } from "@/components/ui/card";
+} from "@/shared/components/ui/accordion";
+import { Card } from "@/shared/components/ui/card";
 import { useImportCurriculumCard } from "./import-curriculum-card.model";
 
 export function ImportCurriculumCard() {

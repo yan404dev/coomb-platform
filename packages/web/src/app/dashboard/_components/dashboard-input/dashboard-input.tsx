@@ -1,8 +1,8 @@
 "use client";
 
 import { ArrowUp, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { AttachmentPreview } from "@/components/attachment-preview";
+import { Button } from "@/shared/components/ui/button";
+import { AttachmentPreview } from "@/shared/components/attachment-preview";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDashboardInputModel } from "./dashboard-input.model";
 

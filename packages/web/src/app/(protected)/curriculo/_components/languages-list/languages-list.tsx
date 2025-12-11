@@ -1,10 +1,10 @@
 "use client";
 
-import { AddItemButton } from "@/components/add-item-button";
+import { AddItemButton } from "@/shared/components/add-item-button";
 import { LanguageCard } from "../language-card";
 import { LanguageModal } from "../language-modal";
-import { FormSection } from "@/components/form";
-import type { Resume, Language } from "@/shared/types";
+import { FormSection } from "@/shared/components/form";
+import type { Resume, Language } from "@/shared/entities";
 import { useLanguagesListViewModel } from "./languages-list.view-model";
 
 interface LanguagesListProps {

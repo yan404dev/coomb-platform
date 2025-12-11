@@ -1,9 +1,6 @@
 import { api } from "@/shared/lib/api";
-import type {
-  Chat,
-  CreateChatDto,
-  UpdateChatTitleDto,
-} from "@/shared/types/chat.types";
+import type { Chat } from "@/shared/entities";
+import type { CreateChatInput, UpdateChatTitleInput } from "@/shared/schemas/chat.schema";
 
 const baseURL = "/api/v1/chats";
 
@@ -11,7 +8,7 @@ export const chatService = {
   /**
    * Criar uma nova conversa
    */
-  create: async (dto: CreateChatDto = {}): Promise<Chat> => {
+  create: async (dto: CreateChatInput = {}): Promise<Chat> => {
     const response = await api.post<Chat>(baseURL, dto);
     return response.data;
   },
@@ -37,7 +34,7 @@ export const chatService = {
    */
   updateTitle: async (
     chatId: string,
-    dto: UpdateChatTitleDto
+    dto: UpdateChatTitleInput
   ): Promise<Chat> => {
     const response = await api.patch<Chat>(`${baseURL}/${chatId}/title`, dto);
     return response.data;

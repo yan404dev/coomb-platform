@@ -1,10 +1,10 @@
 "use client";
 
-import type { Resume } from "@/shared/types";
-import { AddItemButton } from "@/components/add-item-button";
+import type { Resume } from "@/shared/entities";
+import { AddItemButton } from "@/shared/components/add-item-button";
 import { CertificationCard } from "../certification-card";
 import { CertificationModal } from "../certification-modal";
-import { FormSection } from "@/components/form";
+import { FormSection } from "@/shared/components/form";
 import { useCertificationsListModel } from "./certifications-list.model";
 
 interface CertificationsListProps {

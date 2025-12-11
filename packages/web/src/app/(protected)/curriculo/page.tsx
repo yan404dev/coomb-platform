@@ -1,9 +1,9 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
-import { Header } from "@/components";
+import { Header } from "@/shared/components";
 import { CurriculumContainer } from "./_components/curriculum/curriculum-container";
 import { CurriculumSection } from "./_components/navigation-curriculum";
-import { TooltipProvider } from "@/components/ui/tooltip";
+import { TooltipProvider } from "@/shared/components/ui/tooltip";
 import { getResume } from "../perfil/_data/get-resume";
 
 const navigationItems = [

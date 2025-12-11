@@ -1,11 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useSWR from "swr";
 import { messageService } from "@/app/dashboard/_services/message.service";
-import {
-  messageToChatMessage,
-  type Message,
-  MessageType,
-} from "@/shared/types/message.types";
+import { MessageRole, type Message } from "@/shared/entities";
 
 export type ChatRole = "user" | "assistant";
 
@@ -104,7 +100,7 @@ export function useAIChat(chatId: string | null, sessionId?: string | null) {
       setIsSending(true);
       setMessageError(null);
 
-      const currentMessages = messages?.map(messageToChatMessage) ?? [];
+      const currentMessages = messages ?? [];
       const userTimestamp = new Date().toISOString();
 
       const optimisticUserMessage: ChatMessage = {
@@ -115,15 +111,23 @@ export function useAIChat(chatId: string | null, sessionId?: string | null) {
       };
 
       mutate(
-        [...currentMessages, optimisticUserMessage].map((msg) => ({
-          id: msg.id || "",
-          chat_id: chatId || "",
-          messageType:
-            msg.role === "user" ? MessageType.USER : MessageType.ASSISTANT,
-          content: msg.content,
-          pdf_url: msg.pdfUrl || null,
-          created_at: msg.timestamp,
-        })) as Message[],
+        [...currentMessages, optimisticUserMessage].map((msg) => {
+          const timestamp = 'timestamp' in msg ? msg.timestamp : msg.createdAt?.toISOString();
+          return {
+            id: msg.id || "",
+            chatId: chatId || "",
+            role: msg.role === "user" ? "user" : "assistant",
+            messageType: "text" as const,
+            content: msg.content,
+            pdfUrl: msg.pdfUrl || null,
+            citations: null,
+            metadata: null,
+            tokensUsed: null,
+            model: null,
+            createdAt: new Date(timestamp || new Date()),
+            updatedAt: new Date(timestamp || new Date()),
+          };
+        }) as Message[],
         false
       );
 
@@ -135,7 +139,7 @@ export function useAIChat(chatId: string | null, sessionId?: string | null) {
 
         for await (const data of messageService.createWithStream(chatId, {
           content: trimmed,
-          messageType: MessageType.USER,
+          role: MessageRole.USER,
         })) {
           resultChatId = data.chatId;
 
@@ -256,7 +260,7 @@ export function useAIChat(chatId: string | null, sessionId?: string | null) {
     async (jobDescription: string) => {
       const result = await messageService.create(chatId || null, {
         content: jobDescription,
-        messageType: MessageType.USER,
+        role: MessageRole.USER,
       });
 
       const currentChatId = result.chatId || chatId;
@@ -281,7 +285,14 @@ export function useAIChat(chatId: string | null, sessionId?: string | null) {
     abortControllerRef.current = null;
   }, []);
 
-  const chatMessages: ChatMessage[] = messages?.map(messageToChatMessage) ?? [];
+  const chatMessages: ChatMessage[] = (messages ?? []).map(msg => ({
+    id: msg.id,
+    role: msg.role === MessageRole.USER ? "user" : "assistant",
+    content: msg.content,
+    timestamp: msg.createdAt.toISOString(),
+    pdfUrl: msg.pdfUrl || undefined,
+    citations: msg.citations || undefined,
+  }));
 
   const messagesWithOptimistic = optimisticUserMessage
     ? [...chatMessages, optimisticUserMessage]

@@ -1,16 +1,16 @@
 "use client";
 
 import { Briefcase, SquareUser } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardFooter,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
-import type { Resume } from "@/shared/types";
+} from "@/shared/components/ui/card";
+import { Skeleton } from "@/shared/components/ui/skeleton";
+import type { Resume } from "@/shared/entities";
 import { useProfileSidebarModel } from "./profile-sidebar.model";
 
 interface ProfileSidebarProps {

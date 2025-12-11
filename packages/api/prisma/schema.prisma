@@ -3,9 +3,7 @@ generator client {
 }
 
 datasource db {
-  provider  = "postgresql"
-  url       = env("DATABASE_URL")
-  directUrl = env("DIRECT_URL")
+  provider = "postgresql"
 }
 
 model User {
@@ -117,17 +115,37 @@ model GeneratedResume {
   @@map("generated_resumes")
 }
 
+enum MessageRole {
+  USER
+  ASSISTANT
+  SYSTEM
+}
+
+enum MessageContentType {
+  TEXT
+  PDF_ATTACHMENT
+  JOB_DESCRIPTION
+  RESUME_ANALYSIS
+  OPTIMIZATION_RESULT
+}
+
 model Message {
-  id          String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  messageType String
-  content     String   @db.Text
-  pdf_url     String?  @db.Text
+  id          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  chat_id     String             @db.Uuid
+  role        MessageRole        @default(USER)
+  messageType MessageContentType @default(TEXT)
+  content     String             @db.Text
+  pdf_url     String?            @db.Text
   citations   Json?
-  created_at  DateTime @default(now()) @db.Timestamptz(6)
-  chat_id     String   @db.Uuid
+  metadata    Json?
+  tokens_used Int?
+  model       String?
+  created_at  DateTime           @default(now()) @db.Timestamptz(6)
+  updated_at  DateTime           @default(now()) @updatedAt @db.Timestamptz(6)
 
   chat Chat @relation("ChatMessages", fields: [chat_id], references: [id], onDelete: Cascade)
 
+  @@index([chat_id, created_at(sort: Desc)])
   @@map("message")
 }
 
@@ -140,6 +158,9 @@ model Chat {
   messages        Message[] @relation("ChatMessages")
   message_count   Int       @default(0)
   last_message_at DateTime  @default(now()) @db.Timestamptz(6)
+  context_data    Json?
+  last_error      String?   @db.Text
+  total_tokens    Int       @default(0)
   created_at      DateTime  @default(now()) @db.Timestamptz(6)
   updated_at      DateTime  @updatedAt @db.Timestamptz(6)
   deleted_at      DateTime? @db.Timestamptz(6)

@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import { cookies } from "next/headers";
-import { Header } from "@/components";
+import { Header } from "@/shared/components";
 import { ProfileAboutSection } from "./_components/profile-about-section";
 import { ProfileHeader } from "./_components/profile-header";
 import { ProfileSectionCard } from "./_components/profile-section-card";

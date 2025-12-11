@@ -15,7 +15,7 @@ import { LanguagesList } from "../languages-list";
 import { getResumeCompletionStats } from "@/shared/utils/resume-completion";
 import { ImportCurriculumCard } from "./import-curriculum-card";
 import { useTabNavigation } from "@/app/(protected)/curriculo/_hooks/use-tab-navigation";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 interface CurriculumContainerProps {
   navigationItems: NavigationItem[];

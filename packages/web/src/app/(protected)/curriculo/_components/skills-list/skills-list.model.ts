@@ -3,7 +3,7 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Skill } from "@/shared/types";
+import type { Skill } from "@/shared/entities";
 import { deleteSkillAction, updateSkillAction } from "../../_actions/resume.actions";
 
 export function useSkillsListModel() {

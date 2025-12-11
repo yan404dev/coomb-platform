@@ -5,18 +5,18 @@ import {
   CardContent,
   CardDescription,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+} from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 interface ProfileAboutSectionProps {
   resume?: Resume | null;
 }
 
 export const ProfileAboutSection = ({ resume }: ProfileAboutSectionProps) => {
-  const professionalSummary = resume?.user?.professional_summary || "";
-  const careerGoals = resume?.user?.career_goals || "";
+  const professionalSummary = resume?.user?.professionalSummary || "";
+  const careerGoals = resume?.user?.careerGoals || "";
 
   if (!professionalSummary && !careerGoals) {
     return (

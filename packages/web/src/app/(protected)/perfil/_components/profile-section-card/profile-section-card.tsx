@@ -8,9 +8,9 @@ import {
   CardContent,
   CardDescription,
   CardTitle,
-} from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+} from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Separator } from "@/shared/components/ui/separator";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
 import { useProfileSectionCardModel } from "./profile-section-card.model";
 

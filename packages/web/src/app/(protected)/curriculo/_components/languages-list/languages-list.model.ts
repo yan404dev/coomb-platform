@@ -3,7 +3,7 @@
 import { useCallback, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Language } from "@/shared/types";
+import type { Language } from "@/shared/entities";
 import { deleteLanguageAction, updateLanguageAction } from "../../_actions/resume.actions";
 
 export function useLanguagesListModel() {

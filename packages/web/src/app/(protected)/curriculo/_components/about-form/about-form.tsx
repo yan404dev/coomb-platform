@@ -1,14 +1,14 @@
 "use client";
 
 import { useCallback } from "react";
-import { CategoryDialog, FormSaveFooter, FormSection } from "@/components/form";
-import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/ui/input-field";
-import { InputMaskField } from "@/components/ui/input-mask-field";
-import { RadioGroupField } from "@/components/ui/radio-group-field";
-import { SelectField } from "@/components/ui/select-field";
-import { InfoBox } from "@/components/info-box";
-import { Skeleton } from "@/components/ui/skeleton";
+import { CategoryDialog, FormSaveFooter, FormSection } from "@/shared/components/form";
+import { Form } from "@/shared/components/ui/form";
+import { InputField } from "@/shared/components/ui/input-field";
+import { InputMaskField } from "@/shared/components/ui/input-mask-field";
+import { RadioGroupField } from "@/shared/components/ui/radio-group-field";
+import { SelectField } from "@/shared/components/ui/select-field";
+import { InfoBox } from "@/shared/components/info-box";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import { useAboutModel } from "./about.model";
 import { masks } from "@/shared/lib/masks";
 import {

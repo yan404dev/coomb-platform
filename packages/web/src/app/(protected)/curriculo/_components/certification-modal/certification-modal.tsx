@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/ui/input-field";
-import { InputMaskField } from "@/components/ui/input-mask-field";
+} from "@/shared/components/ui/dialog";
+import { Form } from "@/shared/components/ui/form";
+import { InputField } from "@/shared/components/ui/input-field";
+import { InputMaskField } from "@/shared/components/ui/input-mask-field";
 import { useCertificationModalModel } from "./certification-modal.model";
 import { masks } from "@/shared/lib/masks";
 

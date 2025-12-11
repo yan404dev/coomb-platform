@@ -2,7 +2,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { aiService } from "@/app/dashboard/_services/ai.service";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 const PERSONALITY_CONFIG = [
   { key: "executor", label: "Executor", color: "bg-red-500" },
@@ -21,7 +21,7 @@ export function useProfileSidebarModel({
   const [generating, setGenerating] = useState(false);
   const hasGeneratedRef = useRef(false);
   const router = useRouter();
-  const personality = resume?.user?.personality_profile;
+  const personality = resume?.user?.personalityProfile;
 
   const generatePersonality = useCallback(async () => {
     try {

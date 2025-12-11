@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useUser } from "@/shared/hooks/use-user";
-import { AuthRequiredDialog } from "@/components/auth-required-dialog";
+import { AuthRequiredDialog } from "@/shared/components/auth-required-dialog";
 
 interface FileAttachmentCardProps {
   name: string;

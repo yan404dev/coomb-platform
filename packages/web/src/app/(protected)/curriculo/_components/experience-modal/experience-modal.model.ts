@@ -63,18 +63,18 @@ export const useExperienceModalModel = ({
               position: data.position,
               company: data.company,
               startDate: data.startDate,
-              endDate: data.endDate,
+              endDate: data.endDate ?? null,
               current: data.current,
-              description: data.description ?? undefined,
+              description: data.description ?? null,
             });
           } else {
             await experienceService.add({
               position: data.position,
               company: data.company,
               startDate: data.startDate,
-              endDate: data.endDate,
+              endDate: data.endDate ?? null,
               current: data.current,
-              description: data.description ?? undefined,
+              description: data.description ?? null,
             });
           }
 

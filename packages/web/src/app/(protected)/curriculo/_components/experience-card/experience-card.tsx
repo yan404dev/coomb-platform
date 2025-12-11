@@ -1,6 +1,6 @@
 "use client";
 
-import type { Experience } from "@/shared/types";
+import type { Experience } from "@/shared/entities";
 import { useExperienceCardViewModel } from "./experience-card.view-model";
 
 interface ExperienceCardProps {

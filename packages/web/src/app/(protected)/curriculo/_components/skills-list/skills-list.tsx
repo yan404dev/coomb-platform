@@ -1,10 +1,10 @@
 "use client";
 
-import { AddItemButton } from "@/components/add-item-button";
+import { AddItemButton } from "@/shared/components/add-item-button";
 import { SkillCard } from "../skill-card";
 import { SkillModal } from "../skill-modal";
-import { FormSection } from "@/components/form";
-import type { Resume, Skill } from "@/shared/types";
+import { FormSection } from "@/shared/components/form";
+import type { Resume, Skill } from "@/shared/entities";
 import { useSkillsListViewModel } from "./skills-list.view-model";
 
 interface SkillsListProps {

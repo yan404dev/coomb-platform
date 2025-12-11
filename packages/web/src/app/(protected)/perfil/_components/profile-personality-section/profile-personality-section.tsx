@@ -5,10 +5,10 @@ import {
   CardContent,
   CardDescription,
   CardTitle,
-} from "@/components/ui/card";
-import { Skeleton } from "@/components/ui/skeleton";
+} from "@/shared/components/ui/card";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 interface ProfilePersonalitySectionProps {
   resume?: Resume | null;
@@ -26,7 +26,7 @@ export const ProfilePersonalitySection = ({
   resume,
   loading,
 }: ProfilePersonalitySectionProps) => {
-  const personality = resume?.user?.personality_profile;
+  const personality = resume?.user?.personalityProfile;
 
   if (loading) {
     return (

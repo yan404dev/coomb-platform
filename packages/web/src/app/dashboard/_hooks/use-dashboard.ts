@@ -49,8 +49,8 @@ export function useDashboardModel({
   }, [currentChatId]);
 
   const firstName = useMemo(() => {
-    return getFirstName(user?.full_name);
-  }, [user?.full_name]);
+    return getFirstName(user?.fullName);
+  }, [user?.fullName]);
 
   const handleSend = useCallback(
     async (message: string, file?: File | null) => {

@@ -1,4 +1,5 @@
-import type { Experience } from "@/shared/types";
+import type { Experience } from "@/shared/entities";
+import type { CreateExperienceInput } from "@/shared/schemas/resume.schema";
 import {
   addExperienceAction,
   updateExperienceAction,
@@ -6,13 +7,13 @@ import {
 } from "../_actions/resume.actions";
 
 class ExperienceService {
-  async add(data: Omit<Experience, "id" | "createdAt" | "updatedAt">): Promise<void> {
+  async add(data: CreateExperienceInput): Promise<void> {
     await addExperienceAction(data);
   }
 
   async update(
     experienceId: string,
-    data: Partial<Omit<Experience, "id">>
+    data: Partial<Omit<Experience, "id" | "createdAt" | "updatedAt">>
   ): Promise<void> {
     await updateExperienceAction(experienceId, data);
   }

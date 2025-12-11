@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Education } from "@/shared/types";
+import type { Education } from "@/shared/entities";
 import { educationService } from "../../_services/education.service";
 import { formatPeriod } from "@/shared/lib/format";
 

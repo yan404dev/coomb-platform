@@ -2,11 +2,11 @@
 
 import { Pencil, FileText } from "lucide-react";
 import Link from "next/link";
-import { Card, CardContent, CardDescription, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
+import { Card, CardContent, CardDescription, CardTitle } from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
+import { Separator } from "@/shared/components/ui/separator";
 import { CurriculumSection } from "../../../curriculo/_components/navigation-curriculum";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 import { useProfileSkillsSectionModel } from "./profile-skills-section.model";
 
 interface ProfileSkillsSectionProps {

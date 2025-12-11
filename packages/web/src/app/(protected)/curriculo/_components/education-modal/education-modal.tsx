@@ -1,17 +1,17 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { CheckboxField } from "@/components/ui/checkbox-field";
+import { Button } from "@/shared/components/ui/button";
+import { CheckboxField } from "@/shared/components/ui/checkbox-field";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/ui/input-field";
-import { InputMaskField } from "@/components/ui/input-mask-field";
+} from "@/shared/components/ui/dialog";
+import { Form } from "@/shared/components/ui/form";
+import { InputField } from "@/shared/components/ui/input-field";
+import { InputMaskField } from "@/shared/components/ui/input-mask-field";
 import { useEducationModalModel } from "./education-modal.model";
 import { masks } from "@/shared/lib/masks";
 

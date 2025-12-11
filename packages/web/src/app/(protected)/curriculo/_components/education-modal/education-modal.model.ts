@@ -61,7 +61,7 @@ export const useEducationModalModel = ({
               degree: data.degree,
               institution: data.institution,
               startDate: data.startDate,
-              endDate: data.endDate,
+              endDate: data.endDate ?? null,
               current: data.current,
             });
           } else {
@@ -69,7 +69,7 @@ export const useEducationModalModel = ({
               degree: data.degree,
               institution: data.institution,
               startDate: data.startDate,
-              endDate: data.endDate,
+              endDate: data.endDate ?? null,
               current: data.current,
             });
           }

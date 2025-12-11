@@ -1,5 +1,5 @@
 import { api } from "@/shared/lib/api";
-import type { PersonalityProfile, ImportedResumeData } from "@/shared/types";
+import type { PersonalityProfile, ImportedResumeData } from "@/shared/entities";
 
 export interface GeneratePersonalityResponse {
   personality: PersonalityProfile;

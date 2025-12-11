@@ -1,13 +1,13 @@
 import Image from "next/image";
 import Link from "next/link";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 interface ProfileHeaderProps {
   resume?: Resume | null;
 }
 
 export const ProfileHeader = ({ resume }: ProfileHeaderProps) => {
-  const fullName = resume?.user?.full_name || "";
+  const fullName = resume?.user?.fullName || "";
   const phone = resume?.user?.phone || "";
   const city = resume?.user?.city || "";
   const state = resume?.user?.state || "";

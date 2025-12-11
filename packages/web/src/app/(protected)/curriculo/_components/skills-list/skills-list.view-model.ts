@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Resume, Skill } from "@/shared/types";
+import type { Resume, Skill } from "@/shared/entities";
 import { skillService } from "../../_services/skill.service";
 
 export function useSkillsListViewModel(resume: Resume | null) {

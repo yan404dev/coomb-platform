@@ -1,6 +1,6 @@
 "use client";
 
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { RadioGroup, RadioGroupItem } from "@/shared/components/ui/radio-group";
 
 type LanguageLevel =
   | "nenhum"

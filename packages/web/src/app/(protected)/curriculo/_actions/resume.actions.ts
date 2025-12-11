@@ -3,13 +3,13 @@
 import { revalidatePath } from "next/cache";
 import { cookies } from "next/headers";
 import type {
-  ResumeEntity,
+  Resume,
   Experience,
   Skill,
   Language,
   Education,
   Certification,
-} from "@/shared/types";
+} from "@/shared/entities";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 const BASE_URL = `${API_URL}/api/v1/resume`;
@@ -38,7 +38,7 @@ async function handleResponse<T>(response: Response): Promise<T> {
 
 export async function addExperienceAction(
   data: Omit<Experience, "id" | "createdAt" | "updatedAt">
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/experiences`, {
@@ -47,7 +47,7 @@ export async function addExperienceAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -56,7 +56,7 @@ export async function addExperienceAction(
 export async function updateExperienceAction(
   experienceId: string,
   data: Partial<Omit<Experience, "id">>
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/experiences/${experienceId}`, {
@@ -65,7 +65,7 @@ export async function updateExperienceAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -73,7 +73,7 @@ export async function updateExperienceAction(
 
 export async function deleteExperienceAction(
   experienceId: string
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/experiences/${experienceId}`, {
@@ -81,15 +81,15 @@ export async function deleteExperienceAction(
     headers,
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
 }
 
 export async function addSkillAction(
-  data: Omit<Skill, "id" | "createdAt" | "updatedAt">
-): Promise<ResumeEntity> {
+  data: { name: string; level?: any }
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/skills`, {
@@ -98,7 +98,7 @@ export async function addSkillAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -107,7 +107,7 @@ export async function addSkillAction(
 export async function updateSkillAction(
   skillId: string,
   data: Partial<Omit<Skill, "id">>
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/skills/${skillId}`, {
@@ -116,13 +116,13 @@ export async function updateSkillAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
 }
 
-export async function deleteSkillAction(skillId: string): Promise<ResumeEntity> {
+export async function deleteSkillAction(skillId: string): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/skills/${skillId}`, {
@@ -130,15 +130,15 @@ export async function deleteSkillAction(skillId: string): Promise<ResumeEntity> 
     headers,
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
 }
 
 export async function addLanguageAction(
-  data: Omit<Language, "id" | "createdAt" | "updatedAt">
-): Promise<ResumeEntity> {
+  data: { name: string; level?: any }
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/languages`, {
@@ -147,7 +147,7 @@ export async function addLanguageAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -156,7 +156,7 @@ export async function addLanguageAction(
 export async function updateLanguageAction(
   languageId: string,
   data: Partial<Omit<Language, "id">>
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/languages/${languageId}`, {
@@ -165,7 +165,7 @@ export async function updateLanguageAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -173,7 +173,7 @@ export async function updateLanguageAction(
 
 export async function deleteLanguageAction(
   languageId: string
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/languages/${languageId}`, {
@@ -181,7 +181,7 @@ export async function deleteLanguageAction(
     headers,
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -189,7 +189,7 @@ export async function deleteLanguageAction(
 
 export async function addEducationAction(
   data: Omit<Education, "id" | "createdAt" | "updatedAt">
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/educations`, {
@@ -198,7 +198,7 @@ export async function addEducationAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -207,7 +207,7 @@ export async function addEducationAction(
 export async function updateEducationAction(
   educationId: string,
   data: Partial<Omit<Education, "id">>
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/educations/${educationId}`, {
@@ -216,7 +216,7 @@ export async function updateEducationAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -224,7 +224,7 @@ export async function updateEducationAction(
 
 export async function deleteEducationAction(
   educationId: string
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/educations/${educationId}`, {
@@ -232,7 +232,7 @@ export async function deleteEducationAction(
     headers,
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -240,7 +240,7 @@ export async function deleteEducationAction(
 
 export async function addCertificationAction(
   data: Omit<Certification, "id" | "createdAt" | "updatedAt">
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/certifications`, {
@@ -249,7 +249,7 @@ export async function addCertificationAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -258,7 +258,7 @@ export async function addCertificationAction(
 export async function updateCertificationAction(
   certificationId: string,
   data: Partial<Omit<Certification, "id">>
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/certifications/${certificationId}`, {
@@ -267,7 +267,7 @@ export async function updateCertificationAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -275,7 +275,7 @@ export async function updateCertificationAction(
 
 export async function deleteCertificationAction(
   certificationId: string
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(`${BASE_URL}/certifications/${certificationId}`, {
@@ -283,7 +283,7 @@ export async function deleteCertificationAction(
     headers,
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;
@@ -291,13 +291,13 @@ export async function deleteCertificationAction(
 
 export async function updateResumeAction(
   data: {
-    experiences?: Omit<Experience, "id">[];
-    skills?: Omit<Skill, "id">[];
-    languages?: Omit<Language, "id">[];
-    educations?: Omit<Education, "id">[];
-    certifications?: Omit<Certification, "id">[];
+    experiences?: Omit<Experience, "id" | "createdAt" | "updatedAt">[];
+    skills?: Omit<Skill, "id" | "createdAt" | "updatedAt">[];
+    languages?: Omit<Language, "id" | "createdAt" | "updatedAt">[];
+    educations?: Omit<Education, "id" | "createdAt" | "updatedAt">[];
+    certifications?: Omit<Certification, "id" | "createdAt" | "updatedAt">[];
   }
-): Promise<ResumeEntity> {
+): Promise<Resume> {
   const headers = await getAuthHeaders();
 
   const response = await fetch(BASE_URL, {
@@ -306,7 +306,7 @@ export async function updateResumeAction(
     body: JSON.stringify(data),
   });
 
-  const result = await handleResponse<ResumeEntity>(response);
+  const result = await handleResponse<Resume>(response);
   revalidatePath("/curriculo");
   revalidatePath("/perfil");
   return result;

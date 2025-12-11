@@ -1,6 +1,6 @@
 "use client";
 
-import type { Education } from "@/shared/types";
+import type { Education } from "@/shared/entities";
 import { useEducationCardViewModel } from "./education-card.view-model";
 
 interface EducationCardProps {

@@ -19,7 +19,8 @@ CREATE INDEX IF NOT EXISTS "chat_sessions_user_id_idx" ON "chat_sessions"("user_
 CREATE INDEX IF NOT EXISTS "chat_sessions_chat_id_idx" ON "chat_sessions"("chat_id");
 CREATE INDEX IF NOT EXISTS "chat_sessions_expires_at_idx" ON "chat_sessions"("expires_at");
 
-ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "resume_sessions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_resumeId_fkey" FOREIGN KEY ("resumeId") REFERENCES "resume"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+-- Foreign keys serão criadas depois quando as tabelas existirem
+-- ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_chat_id_fkey" FOREIGN KEY ("chat_id") REFERENCES "resume_sessions"("id") ON DELETE CASCADE ON UPDATE CASCADE;
+-- ALTER TABLE "chat_sessions" ADD CONSTRAINT "chat_sessions_resumeId_fkey" FOREIGN KEY ("resumeId") REFERENCES "resume"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 

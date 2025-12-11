@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 import { userService } from "@/shared/services/user.service";
 import { useUser } from "@/shared/hooks/use-user";
 import { ExperiencesFormRequest, experiencesFormSchema } from "./experiences.schema";
@@ -26,8 +26,8 @@ export function useExperiencesModel(resume: Resume | null, onContinue?: () => vo
     const aboutData = resume?.user;
     if (aboutData) {
       form.reset({
-        professional_summary: aboutData.professional_summary ?? "",
-        career_goals: aboutData.career_goals ?? "",
+        professional_summary: aboutData.professionalSummary ?? "",
+        career_goals: aboutData.careerGoals ?? "",
       });
     }
   }, [resume, form]);
@@ -35,7 +35,7 @@ export function useExperiencesModel(resume: Resume | null, onContinue?: () => vo
   async function onSubmit(formData: ExperiencesFormRequest) {
     if (!resume) return;
 
-    await userService.update(resume.user_id, formData);
+    await userService.update(resume.userId, formData);
     await mutateUser();
     router.refresh();
     toast.success("Resumo profissional atualizado com sucesso");

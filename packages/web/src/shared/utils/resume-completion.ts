@@ -1,4 +1,4 @@
-import type { Resume } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 
 export function getResumeCompletionStats(resume?: Resume | null) {
   if (!resume) {
@@ -11,8 +11,8 @@ export function getResumeCompletionStats(resume?: Resume | null) {
 
   // Use completion score from backend
   const percentage =
-    resume.completion_score !== undefined && resume.completion_score !== null
-      ? Math.max(0, Math.min(100, Math.round(resume.completion_score)))
+    resume.completionScore !== undefined && resume.completionScore !== null
+      ? Math.max(0, Math.min(100, Math.round(resume.completionScore)))
       : 0;
 
   return {

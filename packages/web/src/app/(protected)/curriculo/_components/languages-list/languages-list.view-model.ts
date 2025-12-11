@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
-import type { Resume, Language } from "@/shared/types";
+import type { Resume, Language } from "@/shared/entities";
 import { languageService } from "../../_services/language.service";
 
 export function useLanguagesListViewModel(resume: Resume | null) {

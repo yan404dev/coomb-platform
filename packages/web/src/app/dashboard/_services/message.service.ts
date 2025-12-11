@@ -1,25 +1,17 @@
 import { api } from "@/shared/lib/api";
-import type {
-  Message,
-  CreateMessageDto,
-  SearchMessagesDto,
-} from "@/shared/types/message.types";
+import type { Message } from "@/shared/entities";
+import type { CreateMessageInput, SearchMessagesInput } from "@/shared/schemas/message.schema";
 
 const baseURL = "/api/v1/chats";
 
-export interface CreateMessageResponse extends Message {
-  chatId?: string;
-}
-
-export interface UploadResumeDto {
-  fileName: string;
-  jobDescription?: string;
-}
+export type CreateMessageResponse = Message & {
+  chatId: string;
+};
 
 export const messageService = {
   create: async (
     chatId: string | null | undefined,
-    dto: CreateMessageDto
+    dto: CreateMessageInput
   ): Promise<CreateMessageResponse> => {
     const endpoint = chatId
       ? `${baseURL}/${chatId}/messages`
@@ -62,7 +54,7 @@ export const messageService = {
 
   search: async (
     chatId: string,
-    dto: SearchMessagesDto
+    dto: SearchMessagesInput
   ): Promise<Message[]> => {
     const response = await api.post<Message[]>(
       `${baseURL}/${chatId}/messages/search`,
@@ -73,7 +65,7 @@ export const messageService = {
 
   async *createWithStream(
     chatId: string | null | undefined,
-    dto: CreateMessageDto
+    dto: CreateMessageInput
   ): AsyncGenerator<{
     chunk: string;
     messageId: string;

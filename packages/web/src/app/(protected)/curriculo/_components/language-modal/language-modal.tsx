@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import {
   Dialog,
   DialogContent,
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog";
-import { Form } from "@/components/ui/form";
-import { InputField } from "@/components/ui/input-field";
-import { SelectField } from "@/components/ui/select-field";
+} from "@/shared/components/ui/dialog";
+import { Form } from "@/shared/components/ui/form";
+import { InputField } from "@/shared/components/ui/input-field";
+import { SelectField } from "@/shared/components/ui/select-field";
 import type { LanguageRequest } from "./language-modal.schema";
 import { useLanguageModalModel } from "./language-modal.model";
 

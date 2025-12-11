@@ -1,9 +1,9 @@
 import useSWR from "swr";
-import type { ResumeEntity } from "@/shared/types";
+import type { Resume } from "@/shared/entities";
 import { resumeService } from "../_services/resume.service";
 
 export function useResume() {
-  const { data, error, isLoading, mutate } = useSWR<ResumeEntity | undefined>(
+  const { data, error, isLoading, mutate } = useSWR<Resume | undefined>(
     "/api/v1/resume",
     async () => {
       try {
