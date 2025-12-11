@@ -1,4 +1,4 @@
-export { Avatar } from "./avatar";
-export { BubbleTail } from "./bubble-tail";
-export { CitationsList } from "./citations-list";
-export { StreamingIndicator } from "./streaming-indicator";
+export * from "./avatar";
+export * from "./bubble-tail";
+export * from "./citations-list";
+export * from "./streaming-indicator";
