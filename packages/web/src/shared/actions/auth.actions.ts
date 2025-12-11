@@ -2,6 +2,7 @@
 
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { toast } from "sonner";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3001";
 
@@ -27,6 +28,6 @@ export async function transferSessionAction(sessionId: string): Promise<void> {
       body: JSON.stringify({ sessionId }),
     });
   } catch {
-    console.error("Failed to transfer session");
+    toast.error("Erro ao transferir sessão anônima.");
   }
 }
