@@ -2,57 +2,45 @@
 
 import { useState, useEffect, useCallback } from "react";
 import type { User } from "@/shared/entities";
-import { getUserAction } from "@/shared/actions/user.actions";
+import { apiClient } from "@/shared/lib/api";
+
+function getCachedUser(): User | null {
+  if (typeof window === "undefined") return null;
+  try {
+    const cached = localStorage.getItem("user");
+    return cached ? JSON.parse(cached) : null;
+  } catch {
+    return null;
+  }
+}
+
+function setCachedUser(user: User | null) {
+  if (typeof window === "undefined") return;
+  try {
+    if (user) {
+      localStorage.setItem("user", JSON.stringify(user));
+    } else {
+      localStorage.removeItem("user");
+    }
+  } catch {}
+}
 
 export function useUser() {
-  const [user, setUser] = useState<User | null>(null);
-  const [error, setError] = useState<Error | null>(null);
+  const [user, setUser] = useState<User | null>(getCachedUser);
   const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
 
   const fetchUser = useCallback(async () => {
     try {
       setIsLoading(true);
+      const data = await apiClient.get<User>("/api/v1/auth/me");
+      setUser(data);
+      setCachedUser(data);
       setError(null);
-
-      const cachedUser = typeof window !== "undefined"
-        ? window.localStorage.getItem("user")
-        : null;
-
-      if (cachedUser) {
-        setUser(JSON.parse(cachedUser));
-      }
-
-      const userData = await getUserAction();
-
-      if (userData) {
-        setUser(userData);
-        if (typeof window !== "undefined") {
-          try {
-            window.localStorage.setItem("user", JSON.stringify(userData));
-          } catch {
-            // Ignore storage errors
-          }
-        }
-      } else {
-        setUser(null);
-        if (typeof window !== "undefined") {
-          try {
-            window.localStorage.removeItem("user");
-          } catch {
-            // Ignore storage errors
-          }
-        }
-      }
     } catch (err) {
-      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
       setUser(null);
-      if (typeof window !== "undefined") {
-        try {
-          window.localStorage.removeItem("user");
-        } catch {
-          // Ignore storage errors
-        }
-      }
+      setCachedUser(null);
+      setError(err instanceof Error ? err : new Error("Failed to fetch user"));
     } finally {
       setIsLoading(false);
     }
@@ -62,15 +50,11 @@ export function useUser() {
     fetchUser();
   }, [fetchUser]);
 
-  const mutate = useCallback(() => {
-    return fetchUser();
-  }, [fetchUser]);
-
   return {
     user,
     error,
     isLoading,
     isValidating: isLoading,
-    mutate,
+    mutate: fetchUser,
   };
 }
