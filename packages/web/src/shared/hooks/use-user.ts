@@ -8,7 +8,6 @@ const CACHE_KEY = "user";
 
 export function useUser() {
   const [user, setUser] = useState<User | null>(() => {
-    if (typeof window === "undefined") return null;
     const cached = localStorage.getItem(CACHE_KEY);
     return cached ? JSON.parse(cached) : null;
   });
