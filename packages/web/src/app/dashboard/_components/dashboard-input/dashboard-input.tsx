@@ -57,13 +57,12 @@ export const DashboardInput = ({
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        className={`relative rounded-3xl border-2 transition-all duration-200 bg-background ${
-          isDragging
-            ? "border-blue-400 border-dashed bg-blue-50/50 shadow-lg scale-[1.01]"
-            : selectedFile
-            ? "border-gray-300 hover:border-gray-400"
-            : "border-gray-300 hover:border-gray-400"
-        }`}
+        className={`relative rounded-3xl border transition-all duration-200 bg-background ${isDragging
+          ? "border-blue-400 border-dashed bg-blue-50/50 shadow-lg scale-[1.01]"
+          : selectedFile
+            ? "border-neutral-200 hover:border-neutral-300"
+            : "border-neutral-200 hover:border-neutral-300"
+          }`}
       >
         {/* Drag overlay */}
         <AnimatePresence>
@@ -111,9 +110,8 @@ export const DashboardInput = ({
               : "Cole a descrição da vaga, faça uma pergunta ou peça ajuda com sua carreira..."
           }
           rows={1}
-          className={`w-full bg-transparent px-12 sm:px-14 pb-4 focus:outline-none resize-none overflow-y-auto min-h-[56px] max-h-[200px] text-sm sm:text-base text-gray-900 placeholder:text-gray-400 transition-all ${
-            selectedFile ? "pt-2" : "pt-4"
-          }`}
+          className={`w-full bg-transparent px-12 sm:px-14 pb-4 focus:outline-none resize-none overflow-y-auto min-h-[56px] max-h-[200px] text-sm sm:text-base text-gray-900 placeholder:text-gray-400 transition-all ${selectedFile ? "pt-2" : "pt-4"
+            }`}
         />
 
         <Button

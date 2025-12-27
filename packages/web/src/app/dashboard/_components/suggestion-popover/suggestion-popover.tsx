@@ -31,13 +31,18 @@ export const SuggestionPopover = ({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <button className="px-3 sm:px-4 py-1.5 sm:py-2 rounded-full border border-gray-300 hover:bg-gray-100 hover:border-gray-400 transition-all text-xs sm:text-sm text-gray-700 hover:text-gray-900 font-medium whitespace-nowrap">
+        <button className="group px-4 py-2 rounded-full border border-neutral-200 hover:border-neutral-300 bg-transparent hover:bg-black/[0.02] active:bg-black/[0.04] transition-all duration-200 ease-out text-[13px] text-neutral-600 hover:text-neutral-900 font-medium whitespace-nowrap">
           {label}
         </button>
       </PopoverTrigger>
-      <PopoverContent className="w-[calc(100vw-2rem)] sm:w-72 p-3 rounded-2xl" align="center" side="top">
-        <div className="space-y-1">
-          <p className="text-xs font-semibold text-gray-500 px-2 py-1 mb-2">
+      <PopoverContent
+        className="w-[calc(100vw-2rem)] sm:w-64 p-2 rounded-xl border-0 shadow-[0_4px_24px_-4px_rgba(0,0,0,0.12)] backdrop-blur-xl bg-white/95"
+        align="center"
+        side="top"
+        sideOffset={8}
+      >
+        <div className="space-y-0.5">
+          <p className="text-[11px] font-medium text-neutral-400 uppercase tracking-wide px-2 py-1.5 mb-1">
             {title}
           </p>
           {suggestions.map((suggestion, index) => (
@@ -49,21 +54,17 @@ export const SuggestionPopover = ({
                 }
               }}
               disabled={!suggestion.prompt.trim()}
-              className={`w-full text-left px-3 py-2.5 rounded-xl transition-colors ${
-                suggestion.prompt.trim()
-                  ? "hover:bg-gray-100 active:bg-gray-200 cursor-pointer"
-                  : "opacity-60 cursor-default"
-              }`}
+              className={`group/item w-full text-left px-3 py-2 rounded-lg transition-all duration-150 ${suggestion.prompt.trim()
+                ? "hover:bg-black/[0.04] active:scale-[0.98] cursor-pointer"
+                : "opacity-40 cursor-not-allowed"
+                }`}
             >
-              <p className="text-sm font-medium text-gray-900">
+              <p className="text-[13px] font-medium text-neutral-800 group-hover/item:text-neutral-950 transition-colors">
                 {suggestion.title}
               </p>
-              <p className="text-xs text-gray-600 mt-0.5 leading-relaxed">
-                {suggestion.description}
-              </p>
               {!suggestion.prompt.trim() && (
-                <p className="text-xs text-blue-600 mt-1 font-medium">
-                  💡 Cole a descrição da vaga acima para começar
+                <p className="text-[11px] text-neutral-400 mt-0.5">
+                  Cole a vaga acima
                 </p>
               )}
             </button>
