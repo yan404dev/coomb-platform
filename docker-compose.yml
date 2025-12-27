@@ -1,6 +1,23 @@
 version: '3.8'
 
 services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: coomb-postgres
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: coomb
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   coomb-ai:
     build:
       context: ./packages/ai
@@ -24,11 +41,16 @@ services:
     env_file:
       - ./packages/api/.env
     environment:
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/coomb?schema=public
+      DIRECT_URL: postgresql://postgres:postgres@postgres:5432/coomb?schema=public
       COOMB_AI_URL: http://coomb-ai:8000
       FRONTEND_URL: http://localhost:3000
       PORT: 3001
     depends_on:
-      - coomb-ai
+      postgres:
+        condition: service_healthy
+      coomb-ai:
+        condition: service_started
 
   coomb-web:
     build:
@@ -43,3 +65,5 @@ services:
     depends_on:
       - coomb-api
 
+volumes:
+  postgres_data:

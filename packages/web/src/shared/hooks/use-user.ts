@@ -11,8 +11,8 @@ export function useUser() {
   const fetchUser = async () => {
     setIsLoading(true);
     try {
-      const data = await apiClient.get<User>("/api/v1/auth/me");
-      setUser(data);
+      const response = await apiClient.get("/api/v1/auth/me");
+      setUser(response.data);
     } catch {
       setUser(null);
     } finally {
