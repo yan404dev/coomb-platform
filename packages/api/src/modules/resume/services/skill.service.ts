@@ -1,140 +1,63 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { ResumeRepository } from "../repositories/resume.repository";
-import { CompletionScoreService } from "./completion-score.service";
-import { RESUME_INCLUDE } from "../constants/resume.constants";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { ResumeService } from "../resume.service";
 import { CreateSkillDto, UpdateSkillDto } from "../dtos/create-skill.dto";
-import { Resume } from "@prisma/client";
-import { Skill } from "../types/resume-array-items.types";
-import { randomUUID } from "crypto";
-import { recalculateCompletionScore } from "../utils/resume-completion.helper";
-import { toJsonValue, fromJsonValue } from "../utils/json-value.helper";
+import { Skill } from "../entities/skill.entity";
 
 @Injectable()
 export class SkillService {
   constructor(
-    private readonly resumeRepository: ResumeRepository,
-    private readonly completionScoreService: CompletionScoreService
-  ) {}
+    private readonly prisma: PrismaService,
+    private readonly resumeService: ResumeService
+  ) { }
 
-  async add(userId: string, data: CreateSkillDto): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async add(userId: string, data: CreateSkillDto): Promise<Skill> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
-
-        const skills = fromJsonValue<Skill>(resume.skills);
-
-        const newSkill: Skill = {
-          id: randomUUID(),
-          ...data,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            skills: toJsonValue([...skills, newSkill]),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    return this.prisma.skill.create({
+      data: {
+        ...data,
+        resume_id: resume.id,
+      },
+    });
   }
 
-  async update(
-    userId: string,
-    skillId: string,
-    data: UpdateSkillDto
-  ): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async update(userId: string, skillId: string, data: UpdateSkillDto): Promise<Skill> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
+    const skill = await this.prisma.skill.findFirst({
+      where: {
+        id: skillId,
+        resume_id: resume.id,
+      },
+    });
 
-        const skills = fromJsonValue<Skill>(resume.skills);
+    if (!skill) {
+      throw new NotFoundException("Skill não encontrada");
+    }
 
-        const index = skills.findIndex((skill) => skill.id === skillId);
-
-        if (index === -1) {
-          throw new NotFoundException("Skill não encontrada");
-        }
-
-        skills[index] = {
-          ...skills[index],
-          ...data,
-          updatedAt: new Date().toISOString(),
-        };
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            skills: toJsonValue(skills),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    return this.prisma.skill.update({
+      where: { id: skillId },
+      data,
+    });
   }
 
-  async delete(userId: string, skillId: string): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async delete(userId: string, skillId: string): Promise<void> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
+    const skill = await this.prisma.skill.findFirst({
+      where: {
+        id: skillId,
+        resume_id: resume.id,
+      },
+    });
 
-        const skills = fromJsonValue<Skill>(resume.skills);
+    if (!skill) {
+      throw new NotFoundException("Skill não encontrada");
+    }
 
-        const filtered = skills.filter((skill) => skill.id !== skillId);
-
-        if (filtered.length === skills.length) {
-          throw new NotFoundException("Skill não encontrada");
-        }
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            skills: toJsonValue(filtered),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    await this.prisma.skill.delete({
+      where: { id: skillId },
+    });
   }
 }

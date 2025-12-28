@@ -1,143 +1,67 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { ResumeRepository } from "../repositories/resume.repository";
-import { CompletionScoreService } from "./completion-score.service";
-import { RESUME_INCLUDE } from "../constants/resume.constants";
-import {
-  CreateLanguageDto,
-  UpdateLanguageDto,
-} from "../dtos/create-language.dto";
-import { Resume } from "@prisma/client";
-import { Language } from "../types/resume-array-items.types";
-import { randomUUID } from "crypto";
-import { recalculateCompletionScore } from "../utils/resume-completion.helper";
-import { toJsonValue, fromJsonValue } from "../utils/json-value.helper";
+import { PrismaService } from "../../../common/prisma/prisma.service";
+import { ResumeService } from "../resume.service";
+import { CreateLanguageDto, UpdateLanguageDto } from "../dtos/create-language.dto";
+import { Language } from "../entities/language.entity";
 
 @Injectable()
 export class LanguageService {
   constructor(
-    private readonly resumeRepository: ResumeRepository,
-    private readonly completionScoreService: CompletionScoreService
-  ) {}
+    private readonly prisma: PrismaService,
+    private readonly resumeService: ResumeService
+  ) { }
 
-  async add(userId: string, data: CreateLanguageDto): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async add(userId: string, data: CreateLanguageDto): Promise<Language> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
-
-        const languages = fromJsonValue<Language>(resume.languages);
-
-        const newLanguage: Language = {
-          id: randomUUID(),
-          ...data,
-          createdAt: new Date().toISOString(),
-          updatedAt: new Date().toISOString(),
-        };
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            languages: toJsonValue([...languages, newLanguage]),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    return this.prisma.language.create({
+      data: {
+        resume_id: resume.id,
+        name: data.name,
+        proficiency: data.level,
+      },
+    });
   }
 
-  async update(
-    userId: string,
-    languageId: string,
-    data: UpdateLanguageDto
-  ): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async update(userId: string, languageId: string, data: UpdateLanguageDto): Promise<Language> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
+    const language = await this.prisma.language.findFirst({
+      where: {
+        id: languageId,
+        resume_id: resume.id,
+      },
+    });
 
-        const languages = fromJsonValue<Language>(resume.languages);
+    if (!language) {
+      throw new NotFoundException("Language não encontrada");
+    }
 
-        const index = languages.findIndex((lang) => lang.id === languageId);
-
-        if (index === -1) {
-          throw new NotFoundException("Idioma não encontrado");
-        }
-
-        languages[index] = {
-          ...languages[index],
-          ...data,
-          updatedAt: new Date().toISOString(),
-        };
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            languages: toJsonValue(languages),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    return this.prisma.language.update({
+      where: { id: languageId },
+      data: {
+        name: data.name,
+        proficiency: data.level,
+      },
+    });
   }
 
-  async delete(userId: string, languageId: string): Promise<Resume> {
-    return this.resumeRepository
-      .transaction(async (tx) => {
-        const resume = await tx.resume.findFirst({
-          where: { user_id: userId },
-          include: RESUME_INCLUDE,
-        });
+  async delete(userId: string, languageId: string): Promise<void> {
+    const resume = await this.resumeService.findUserResume(userId);
 
-        if (!resume) {
-          throw new NotFoundException("Resumo não encontrado");
-        }
+    const language = await this.prisma.language.findFirst({
+      where: {
+        id: languageId,
+        resume_id: resume.id,
+      },
+    });
 
-        const languages = fromJsonValue<Language>(resume.languages);
+    if (!language) {
+      throw new NotFoundException("Language não encontrada");
+    }
 
-        const filtered = languages.filter((lang) => lang.id !== languageId);
-
-        if (filtered.length === languages.length) {
-          throw new NotFoundException("Idioma não encontrado");
-        }
-
-        const updatedResume = await tx.resume.update({
-          where: { id: resume.id },
-          data: {
-            languages: toJsonValue(filtered),
-          },
-          include: RESUME_INCLUDE,
-        });
-
-        return recalculateCompletionScore(
-          tx,
-          updatedResume,
-          this.completionScoreService
-        );
-      })
-      .then((resume) => resume);
+    await this.prisma.language.delete({
+      where: { id: languageId },
+    });
   }
 }
