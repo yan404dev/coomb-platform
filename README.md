@@ -357,7 +357,7 @@ Este projeto está licenciado sob a Licença MIT - veja o arquivo [LICENSE](LICE
 
 **Yan Castro**
 
-- GitHub: [@yanmcastro](https://github.com/yanmcastro)
+- GitHub: [@cplx](https://github.com/cplx)
 - LinkedIn: [Yan Castro](https://linkedin.com/in/yanmcastro)
 
 ## Agradecimentos
