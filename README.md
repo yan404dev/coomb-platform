@@ -1,5 +1,7 @@
 # Coomb - AI-Powered Resume Optimization Platform
 
+![Preview](./packages/web/public/preview.png)
+
 > Plataforma open source de otimização de currículos com Inteligência Artificial
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
